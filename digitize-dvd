@@ -1,0 +1,24 @@
+#!/bin/bash
+#===================================================================================
+#
+#         FILE: digitize-dvd
+#
+#        USAGE: digitize-dvd [-d] [-l] [-oD logfile] [-h] [starting directories]
+#
+#      SUMMARY: Script to digitize my DVD collection and manage the resulting file.
+#  DESCRIPTION: This is a lot of glue and automation on top of my other actual 
+#               ripping and transcoding functions.  It's been kind of fun designing
+#               and figuring out how to do this.
+#
+#      PROJECT: Media Collection (media-archive)
+#      OPTIONS: 
+# REQUIREMENTS: asdf
+# PACKAGES REQ: asdf
+#         BUGS: Probably dozens.
+#        NOTES: ---
+#       AUTHOR: KlfJoat
+#      VERSION: 0.1
+#      CREATED: 2014-05-03
+#     REVISION: ---
+#===================================================================================
+

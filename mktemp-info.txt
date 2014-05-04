@@ -1,0 +1,55 @@
+   * Create a secure fifo relative to the user's choice of `TMPDIR',
+     but falling back to the current directory rather than `/tmp'.
+     Note that `mktemp' does not create fifos, but can create a secure
+     directory in which the fifo can live.  Exit the shell if the
+     directory or fifo could not be created.
+          $ dir=$(mktemp -p "${TMPDIR:-.}" -d dir-XXXX) || exit 1
+          $ fifo=$dir/fifo
+          $ mkfifo "$fifo" || { rmdir "$dir"; exit 1; }
+
+   * Create and use a temporary file if possible, but ignore failure.
+     The file will reside in the directory named by `TMPDIR', if
+     specified, or else in `/tmp'.
+          $ file=$(mktemp -q) && {
+          >   # Safe to use $file only within this block.  Use quotes,
+          >   # since $TMPDIR, and thus $file, may contain whitespace.
+          >   echo ... > "$file"
+          >   rm "$file"
+          > }
+
+TMPDIR=$(mktemp --quiet --directory --tmpdir=~/tmp) || { echo "Failed to create temp directory."; exit 1; }
+
+http://content.hccfl.edu/pollock/ShScript/TempFile.htm
+function clean_up {
+	# Perform program exit housekeeping
+	rm $TEMP
+	exit
+}
+trap clean_up 1 2 3 15
+
+The signals that a script commonly needs to handle include SIGHUP (1), SIGINT (2), 
+SIGQUIT (3), and SIGTERM (15).  The list can be either the names or the numbers 
+in bash.  (See "kill -l" and "man 7 signal" for more information on signals.) 
+
+One remaining problem is that a script may exit at several points in the middle 
+of the script (say if an error occurs or there's an exit in the script).  Having 
+a single call to clean_up at the bottom may not work.  A "pseudo-signal" 
+EXIT or 0 (zero) can be used with trap, to have the command executed on exit for 
+any reason. 
+function clean_up {
+	# Perform program exit housekeeping
+	rm $TEMP
+        trap 0  # reset to default action
+	exit
+}
+trap clean_up 0 1 2 3 15
+
+
+
+https://help.gnome.org/users/zenity/stable/
+http://linuxmanpages.com/man1/zenity.1.php
+http://ss64.com/bash/wait.html
+ripdvd &
+zenity blah blah &
+wait
+... continue
