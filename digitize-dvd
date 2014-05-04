@@ -22,3 +22,57 @@
 #     REVISION: ---
 #===================================================================================
 
+################################
+####### CHECK CONDITIONS #######
+################################
+### Check for enough HDD space.  43GB = 18GB + 25GB buffer
+### Check if DVD is a movie or TV show
+
+##############################
+####### INITIALIZATION #######
+##############################
+### Create temp dir
+TMPDIR=$(mktemp --quiet --directory --tmpdir=~/tmp) || { echo "Failed to create temp directory."; exit 1; }
+olddir=$(pwd)
+cd $TMPDIR
+
+### Set up traps for program exit
+
+###########################################
+####### DUAL - RIP AND GET DVD INFO #######
+###########################################
+dvdtoiso
+
+### Use find to get ISO filename (only ISO (and file) in TMPDIR)
+# Use basename to get filename minus dirs and minus ext (use for transcode filename)
+
+###########################################
+#?????? ADD DISC TO TOC SPREADSHEET ???????
+###########################################
+
+#########################
+####### TRANSCODE #######
+#########################
+
+###########################
+####### COPY TO NAS #######
+###########################
+### Check for filename collision
+### Copy rip to NAS
+### Copy transcode to NAS
+
+###############################################
+####### COPY TO EXT HDD OR HOLDING AREA #######
+###############################################
+### Check for ext HDD
+### Check for filename collision
+### Copy rip to ext HDD
+### Copy transcode to ext HDD
+
+########################
+####### CLEAN UP #######
+########################
+### Delete rip
+### Delete transcode
+### Change back
+cd $olddir

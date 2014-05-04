@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Debugging
+set -x
+
+# Set device as the passed parameter, or a sensible default
+dvd_device=${1:-/dev/sr0}
+shift
+
+# Grab a sensible default title from the disc itself
+title=`dvdbackup --info --input=$dvd_device 2>/dev/null | grep 'DVD-Video information of the DVD with title' | sed -e 's/.* title \"//' | sed -e 's/\"$//'`
+
+# If empty title, create a lame one for our use
+if [ "$title" = "" ] ; then
+  title="DVD_VIDEO"
+fi
+
+# If existing directory, find an unused name for us to rip to, and set $title to that
+i="0"
+findTitle="$title"
+while [ -d ./"$findTitle" ] ; do
+  i=$[$i+1]
+  findTitle="$title-$i"
+done
+title="$findTitle"
+
+# Rip in the background with progress info and using block mode if an error is encountered
+#sleep 3 &
+dvdbackup --mirror --progress --error=b --input=$dvd_device --name="$title" &
+
+# Gather the DVD name (while ripping)
+newtitle=$(zenity --entry --title="DVD Name" --text="Enter the name of the DVD:" --entry-text="$title")
+
+# Wait for both the rip and the DVD name gathering to end
+wait
+
+# Eject DVD in the background now that we're done with it
+eject $dvd_device &
+
+# If user entered a new title (not empty), rename the directory and set title==newtitle
+if [ "$title" != "" ] ; then
+  if  [ "$title" != "$newtitle" ] ; then
+    #notify-send --expire-time=2000 --icon=info "Old title not same as new title"  
+    mv --no-clobber "$title" "$newtitle"
+    title=$newtitle
+  fi
+fi
+
+# Check for existing ISO and set $isoTitle as necessary
+i="0"
+isoTitle="$title.iso"
+while [ -f "$isoTitle" ] ; do
+  i=$[$i+1]
+  isoTitle="$title-$i.iso"
+done
+
+# Recreate ISO
+mkisofs -A "$title" -dvd-video -udf -quiet -output "$isoTitle" "$title"
+
+# If error during mkisofs, complain and exit
+if [ $? -ne 0 ] ; then
+  zenity --error --text="ERROR RUNNING mkisofs/genisoimage on $title to make $isoTitle"
+  exit $? 
+fi
+
+# Delete the working directory now that the ISO is done successfully
+/bin/rm -rf ./"$title"
+
+# Notify user that we're done
+notify-send --expire-time=1000 --icon=info "Done creating ISO for $title."
