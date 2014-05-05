@@ -1,11 +1,12 @@
 #!/bin/bash
+# digitize-cd
 #===================================================================================
 #
-#         FILE: digitize-dvd
+#         FILE: digitize-cd
 #
-#        USAGE: digitize-dvd 
+#        USAGE: digitize-cd
 #
-#      SUMMARY: Script to digitize my DVD collection and manage the resulting file.
+#      SUMMARY: Script to digitize my CD collection and manage the resulting files.
 #  DESCRIPTION: This is a lot of glue and automation on top of my other actual 
 #               ripping and transcoding functions.  It's been kind of fun designing
 #               and figuring out how to do this.
@@ -21,34 +22,39 @@
 #      CREATED: 2014-05-03
 #     REVISION: ---
 #===================================================================================
-
+# Debug
+set -x
 ################################
 ####### CHECK CONDITIONS #######
 ################################
-### Check for enough HDD space.  43GB = 18GB + 25GB buffer
-### Check if DVD is a movie or TV show
+### Check for enough HDD space.  ??43GB = 18GB + 25GB buffer
 
 ##############################
 ####### INITIALIZATION #######
 ##############################
+### Variables
+workingdir="$HOME/tmp"
+nasrip="$HOME/Audio/Rips"
+nastranscode="$HOME/Audio/Music/MyCDs"
+
 ### Create temp dir
-TMPDIR=$(mktemp --quiet --directory --tmpdir=~/tmp) || { echo "Failed to create temp directory."; exit 1; }
+TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
 olddir=$(pwd)
 cd $TMPDIR
 
 ### Set up traps for program exit
 
 ###########################################
-####### DUAL - RIP AND GET DVD INFO #######
+####### DUAL - RIP AND GET CD INFO #######
 ###########################################
-dvdtoiso
+$HOME/src/media-archive/cdto1flac
 
-### Figure out ISO filename (should be the only one in our temp directory)
-isofile=$(find *.iso)
+### Figure out FLAC filename (should be the only one in our temp directory)
+flacfile=$(find *.flac)
 
-# Get filename minus dirs and minus ext (use for transcode filename)
-basename=$(basename --suffix=.iso $isofile)
-transcodefilename="$basename.mkv"
+# Delete extraneous cuesheet
+/bin/rm "$flacfile.cue"
+
 
 ###########################################
 #?????? ADD DISC TO TOC SPREADSHEET ???????
@@ -57,13 +63,30 @@ transcodefilename="$basename.mkv"
 #########################
 ####### TRANSCODE #######
 #########################
+$HOME/src/media-archive/1flactoogg "$flacfile"
+
+### Get directory of filename minus dirs and minus ext (use for transcode filename)
+transcodedir=$(find * -maxdepth 0 -type d)
 
 ###########################
 ####### COPY TO NAS #######
 ###########################
 ### Check for filename collision
+# Rip collision
+if [[ -f "$nasrip/$flacfile" ]]; then
+  zenity --error --text="$nasrip/$flacfile already exists!  Exiting."
+  exit 1
+fi
+# Transcode collision??  (HOW???)
+#if [[ -f "$nastranscode/$transcodedir" ]]; then
+#  zenity --error --text="$nasrip/$flacfile already exists!  Exiting."
+#  exit 1
+#fi
+
 ### Copy rip to NAS
+cp --verbose --recursive --no-clobber "$flacfile" "$nasrip"
 ### Copy transcode to NAS
+cp --verbose --recursive --no-clobber "$transcodedir" "$nastranscode"
 
 ###############################################
 ####### COPY TO EXT HDD OR HOLDING AREA #######
@@ -77,6 +100,7 @@ transcodefilename="$basename.mkv"
 ####### CLEAN UP #######
 ########################
 ### Change back
+#? cd ..
 cd $olddir
-### Delete rip and transcode
-#/bin/rm -rf $TMPDIR
+### Delete rip & transcode
+/bin/rm -rf $TMPDIR

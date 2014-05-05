@@ -1,0 +1,13 @@
+#!/bin/bash
+# cdto1flac
+
+# Debugging
+set -x
+
+# Set device as the passed parameter, or a sensible default
+cd_device=${1:-/dev/sr0}
+shift
+
+abcde -1 -d $cd_device -o flac -a default,cue
+
+eject $cd_device &
