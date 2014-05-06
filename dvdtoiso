@@ -1,7 +1,23 @@
 #!/bin/bash
+#
+# Requirements: dvdbackup
 
 # Debugging
 set -x
+
+# Check for this script's requirements & exit with error if they are not found.
+my_needed_commands="dvdbackup mkisofs zenity eject notify-send"
+missing_counter=0
+for needed_command in $my_needed_commands; do
+  if ! hash "$needed_command" >/dev/null 2>&1; then
+    printf "Command not found in PATH: %s\n" "$needed_command" >&2
+    ((missing_counter++))
+  fi
+done
+if ((missing_counter > 0)); then
+  printf "Minimum %d commands are missing in PATH, aborting\n" "$missing_counter" >&2
+  exit 1
+fi
 
 # Set device as the passed parameter, or a sensible default
 dvd_device=${1:-/dev/sr0}
@@ -60,7 +76,8 @@ mkisofs -A "$title" -dvd-video -udf -quiet -output "$isoTitle" "$title"
 # If error during mkisofs, complain and exit
 if [ $? -ne 0 ] ; then
   curdir=$(pwd)
-  zenity --error --text="ERROR RUNNING mkisofs/genisoimage on $curdir/$title/ to make $curdir/$isoTitle"
+  echo "ERROR running mkisofs/genisoimage on $curdir/$title/ to make $curdir/$isoTitle" >&2
+  zenity --error --text="ERROR running mkisofs/genisoimage on $curdir/$title/ to make $curdir/$isoTitle"
   exit $? 
 fi
 

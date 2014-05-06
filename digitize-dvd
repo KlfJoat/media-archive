@@ -12,8 +12,8 @@
 #
 #      PROJECT: Media Collection (media-archive)
 #      OPTIONS: 
-# REQUIREMENTS: asdf
-# PACKAGES REQ: asdf
+# REQUIREMENTS: dvdbackup
+# PACKAGES REQ: dvdbackup
 #         BUGS: Probably dozens.
 #        NOTES: ---
 #       AUTHOR: KlfJoat
@@ -25,6 +25,20 @@
 ################################
 ####### CHECK CONDITIONS #######
 ################################
+### Check for necessary commands
+my_needed_commands="find basename /bin/rm mktemp pwd zenity"
+missing_counter=0
+for needed_command in $my_needed_commands; do
+  if ! hash "$needed_command" >/dev/null 2>&1; then
+    printf "Command not found in PATH: %s\n" "$needed_command" >&2
+    ((missing_counter++))
+  fi
+done
+if ((missing_counter > 0)); then
+  printf "Minimum %d commands are missing in PATH, aborting\n" "$missing_counter" >&2
+  exit 1
+fi
+
 ### Check for enough HDD space.  43GB = 18GB + 25GB buffer
 ### Check if DVD is a movie or TV show
 

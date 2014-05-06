@@ -27,6 +27,20 @@ set -x
 ################################
 ####### CHECK CONDITIONS #######
 ################################
+### Check for necessary commands
+my_needed_commands="find /bin/rm mktemp pwd zenity"
+missing_counter=0
+for needed_command in $my_needed_commands; do
+  if ! hash "$needed_command" >/dev/null 2>&1; then
+    printf "Command not found in PATH: %s\n" "$needed_command" >&2
+    ((missing_counter++))
+  fi
+done
+if ((missing_counter > 0)); then
+  printf "Minimum %d commands are missing in PATH, aborting\n" "$missing_counter" >&2
+  exit 1
+fi
+
 ### Check for enough HDD space.  ??43GB = 18GB + 25GB buffer
 
 ##############################
@@ -74,6 +88,7 @@ transcodedir=$(find * -maxdepth 0 -type d)
 ### Check for filename collision
 # Rip collision
 if [[ -f "$nasrip/$flacfile" ]]; then
+  echo "$nasrip/$flacfile already exists!  Exiting." >&2
   zenity --error --text="$nasrip/$flacfile already exists!  Exiting."
   exit 1
 fi

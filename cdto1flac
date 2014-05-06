@@ -4,6 +4,12 @@
 # Debugging
 set -x
 
+# Check for abcde before execution
+if ! hash "abcde" >/dev/null 2>&1; then
+  echo "Command not found in PATH: abcde" >&2
+  exit 1
+fi
+
 # Set device as the passed parameter, or a sensible default
 cd_device=${1:-/dev/sr0}
 shift
