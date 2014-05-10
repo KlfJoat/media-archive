@@ -48,18 +48,20 @@ fi
 ##############################
 ### Variables
 workingdir="$HOME/tmp"
-  mkdir --parents "$workingdir"
 nas_rip="$HOME/Audio/Rips"
-  mkdir --parents "$nas_rip"
 nas_transcode="$HOME/Audio/Music/MyCDs"
-  mkdir --parents "$nas_transcode"
 holding_rip="$HOME/tmp/MoveToRipDrive"
-  mkdir --parents "$holding_rip"
 holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
-  mkdir --parents "$holding_transcode"
 dir_rip="CD-Rip"
 dir_transcode="CD-Transcode"
 
+### Ensure directories are created for the working, NAS, and holding variables.
+mkdir --parents "$workingdir"
+mkdir --parents "$nas_rip"
+mkdir --parents "$nas_transcode"
+mkdir --parents "$holding_rip"
+mkdir --parents "$holding_transcode"
+      
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
 olddir=$(pwd)
