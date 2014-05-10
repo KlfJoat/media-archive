@@ -16,10 +16,10 @@
 # PACKAGES REQ: abcde
 #         BUGS: Doesn't do enough checking to ensure commands complete successfully,
 #               and then act appropriately.
-#        NOTES: ---
+#        NOTES: TODO: Add support for specifying the CD drive on the command-line.
 #       AUTHOR: KlfJoat
-#      VERSION: 0.1
-#      CREATED: 2014-05-03
+#      VERSION: 0.2
+#      CREATED: 2014-05-03 to 2014-05-10
 #     REVISION: ---
 #===================================================================================
 # Debug
