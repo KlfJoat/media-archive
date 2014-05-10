@@ -48,10 +48,15 @@ fi
 ##############################
 ### Variables
 workingdir="$HOME/tmp"
+  mkdir --parents "$workingdir"
 nas_rip="$HOME/Audio/Rips"
+  mkdir --parents "$nas_rip"
 nas_transcode="$HOME/Audio/Music/MyCDs"
+  mkdir --parents "$nas_transcode"
 holding_rip="$HOME/tmp/MoveToRipDrive"
+  mkdir --parents "$holding_rip"
 holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
+  mkdir --parents "$holding_transcode"
 dir_rip="CD-Rip"
 dir_transcode="CD-Transcode"
 
@@ -137,7 +142,6 @@ if [[ "$ripdrive" ]]; then
   cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"/"$dir_rip"
 else
   # Make holding directory if it doesn't exist
-  mkdir --parents "$holding_rip"
   cp --verbose --recursive --no-clobber "$flacfile" "$holding_rip"
 fi
 
@@ -146,7 +150,6 @@ if [[ "$transcodedrive" ]]; then
   cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"/"$dir_transcode"
 else
   # Make holding directory if it doesn't exist
-  mkdir --parents "$holding_transcode"
   cp --verbose --recursive --no-clobber "$transcodedir" "$holding_transcode"
 fi
 
