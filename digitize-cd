@@ -48,10 +48,10 @@ fi
 ##############################
 ### Variables
 workingdir="$HOME/tmp"
-nasrip="$HOME/Audio/Rips"
-nastranscode="$HOME/Audio/Music/MyCDs"
-ripholding="$HOME/tmp/MoveToRipDrive"
-transcodeholding="$HOME/tmp/MoveToTranscodeDrive"
+nas_rip="$HOME/Audio/Rips"
+nas_transcode="$HOME/Audio/Music/MyCDs"
+holding_rip="$HOME/tmp/MoveToRipDrive"
+holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
 
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
@@ -89,17 +89,17 @@ transcodedir=$(find * -maxdepth 0 -type d)
 ###########################
 ### Check for filename collision
 # Rip collision
-if [[ -f "$nasrip/$flacfile" ]]; then
-  echo "$nasrip/$flacfile already exists!  Exiting." >&2
-  zenity --error --text="$nasrip/$flacfile already exists!  Exiting."
+if [[ -f "$nas_rip/$flacfile" ]]; then
+  echo "$nas_rip/$flacfile already exists!  Exiting." >&2
+  zenity --error --text="$nas_rip/$flacfile already exists!  Exiting."
   exit 1
 fi
 # Transcode collision - the copy below will complain if that's the case.
 
 ### Copy rip to NAS
-cp --verbose --recursive --no-clobber "$flacfile" "$nasrip"
+cp --verbose --recursive --no-clobber "$flacfile" "$nas_rip"
 ### Copy transcode to NAS
-cp --verbose --recursive --no-clobber "$transcodedir" "$nastranscode"
+cp --verbose --recursive --no-clobber "$transcodedir" "$nas_transcode"
 
 ###############################################
 ####### COPY TO EXT HDD OR HOLDING AREA #######
@@ -135,10 +135,10 @@ if [[ "$ripdrive" ]]; then
   cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"
 else
   # Make holding directory if it doesn't exist
-  if [[ ! -d "$ripholding" ]]; then
-    mkdir -p "$ripholding"
+  if [[ ! -d "$holding_rip" ]]; then
+    mkdir -p "$holding_rip"
   fi
-  cp --verbose --recursive --no-clobber "$flacfile" "$ripholding"
+  cp --verbose --recursive --no-clobber "$flacfile" "$holding_rip"
 fi
 
 ### Copy transcode to ext HDD, if mounted; holding dir if not.
@@ -146,10 +146,10 @@ if [[ "$transcodedrive" ]]; then
   cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"
 else
   # Make holding directory if it doesn't exist
-  if [[ ! -d "$transcodeholding" ]]; then
-    mkdir -p "$transcodeholding"
+  if [[ ! -d "$holding_transcode" ]]; then
+    mkdir -p "$holding_transcode"
   fi
-  cp --verbose --recursive --no-clobber "$transcodedir" "$transcodeholding"
+  cp --verbose --recursive --no-clobber "$transcodedir" "$holding_transcode"
 fi
 
 ########################
