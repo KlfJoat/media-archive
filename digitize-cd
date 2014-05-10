@@ -56,7 +56,7 @@ transcodeholding="$HOME/tmp/MoveToTranscodeDrive"
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
 olddir=$(pwd)
-cd $TMPDIR
+cd "$TMPDIR"
 
 ### Set up traps for program exit
 
@@ -104,13 +104,13 @@ cp --verbose --recursive --no-clobber "$transcodedir" "$nastranscode"
 ###############################################
 ####### COPY TO EXT HDD OR HOLDING AREA #######
 ###############################################
-### Check for ext HDD
+# Variables - RegExps to use.
 ripregexp="\/Rip"
 transcoderegexp="\/Transcode"
 
 ### First, make sure only one of each recognizable drive is attached.
-### Then, set the drives' mount points.  (easier way?)
-# Rip drive
+### Then, set the drives' mount points. 
+# Find 1 Rip drive
 ripcount=$(grep --count "$ripregexp" /proc/mounts)
 if [[ $ripcount -eq 1 ]];
   # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
@@ -119,7 +119,7 @@ if [[ $ripcount -eq 1 ]];
   $ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
 fi
 
-# Transcode drive
+# Find 1 Transcode drive
 transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
 if [[ $transcodecount -eq 1 ]];
   # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
