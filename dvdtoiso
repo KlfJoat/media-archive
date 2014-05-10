@@ -41,7 +41,6 @@ done
 title="$findTitle"
 
 # Rip in the background with progress info and using block mode if an error is encountered
-#sleep 3 &
 dvdbackup --mirror --progress --error=b --input=$dvd_device --name="$title" &
 
 # Gather the DVD name (while ripping)
@@ -56,7 +55,6 @@ eject $dvd_device &
 # If user entered a new title (not empty), rename the directory and set title==newtitle
 if [ "$title" != "" ] ; then
   if  [ "$title" != "$newtitle" ] ; then
-    #notify-send --expire-time=2000 --icon=info "Old title not same as new title"  
     mv --no-clobber "$title" "$newtitle"
     title=$newtitle
   fi
