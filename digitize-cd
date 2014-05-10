@@ -152,7 +152,7 @@ if [[ "$transcodedrive" ]]; then
   mkdir --parents "$transcodedrive"/"$dir_transcode"
   cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"/"$dir_transcode"
 else
-  cp --verbose --recursive --no-clobber "$transcodedir" "$holding_transcode"/"$dir_rip"
+  cp --verbose --recursive --no-clobber "$transcodedir" "$holding_transcode"/"$dir_transcode"
 fi
 
 ########################
