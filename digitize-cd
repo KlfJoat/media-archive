@@ -121,7 +121,7 @@ transcoderegexp="\/Transcode"
 ### Then, set the drives' mount points. 
 # Find 1 Rip drive
 ripcount=$(grep --count "$ripregexp" /proc/mounts)
-if [[ $ripcount -eq 1 ]];
+if [[ $ripcount -eq 1 ]]; then
   # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
   # leaving only the rest of line. Which is the mount point including any 
   # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
@@ -130,7 +130,7 @@ fi
 
 # Find 1 Transcode drive
 transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
-if [[ $transcodecount -eq 1 ]];
+if [[ $transcodecount -eq 1 ]]; then
   # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
   # leaving only the rest of line. Which is the mount point including any 
   # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
