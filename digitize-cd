@@ -52,6 +52,8 @@ nas_rip="$HOME/Audio/Rips"
 nas_transcode="$HOME/Audio/Music/MyCDs"
 holding_rip="$HOME/tmp/MoveToRipDrive"
 holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
+dir_rip="CD-Rip"
+dir_transcode="CD-Transcode"
 
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
@@ -132,7 +134,7 @@ fi
 
 ### Copy rip to ext HDD, if mounted; holding dir if not.
 if [[ "$ripdrive" ]]; then
-  cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"
+  cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"/"$dir_rip"
 else
   # Make holding directory if it doesn't exist
   if [[ ! -d "$holding_rip" ]]; then
@@ -143,7 +145,7 @@ fi
 
 ### Copy transcode to ext HDD, if mounted; holding dir if not.
 if [[ "$transcodedrive" ]]; then
-  cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"
+  cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"/"$dir_transcode"
 else
   # Make holding directory if it doesn't exist
   if [[ ! -d "$holding_transcode" ]]; then
