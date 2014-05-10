@@ -3,10 +3,10 @@
 # Requirements: dvdbackup
 
 # Debugging
-set -x
+#set -x
 
 # Check for this script's requirements & exit with error if they are not found.
-my_needed_commands="dvdbackup mkisofs zenity eject notify-send"
+my_needed_commands="dvdbackup mkisofs zenity eject"
 missing_counter=0
 for needed_command in $my_needed_commands; do
   if ! hash "$needed_command" >/dev/null 2>&1; then
@@ -84,5 +84,5 @@ fi
 # Delete the working directory now that the ISO is done successfully
 /bin/rm -rf ./"$title"
 
-# Notify user that we're done
-notify-send --expire-time=1000 --icon=info "Done creating ISO for $title."
+# Notify user that we're done (10sec)
+notify-send --expire-time=10000 --icon=info "Done creating ISO for $title."
