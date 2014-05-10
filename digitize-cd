@@ -55,12 +55,10 @@ holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
 dir_rip="CD-Rip"
 dir_transcode="CD-Transcode"
 
-### Ensure directories are created for the working, NAS, and holding variables.
+### Ensure directories are created for the working and NAS variables.
 mkdir --parents "$workingdir"
 mkdir --parents "$nas_rip"
 mkdir --parents "$nas_transcode"
-mkdir --parents "$holding_rip"/"$dir_rip"
-mkdir --parents "$holding_transcode"/"$dir_transcode"
       
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
@@ -144,6 +142,7 @@ if [[ "$ripdrive" ]]; then
   mkdir --parents "$ripdrive"/"$dir_rip"
   cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"/"$dir_rip"
 else
+  mkdir --parents "$holding_rip"/"$dir_rip"
   cp --verbose --recursive --no-clobber "$flacfile" "$holding_rip"/"$dir_rip"
 fi
 
@@ -152,6 +151,7 @@ if [[ "$transcodedrive" ]]; then
   mkdir --parents "$transcodedrive"/"$dir_transcode"
   cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"/"$dir_transcode"
 else
+  mkdir --parents "$holding_transcode"/"$dir_transcode"
   cp --verbose --recursive --no-clobber "$transcodedir" "$holding_transcode"/"$dir_transcode"
 fi
 
