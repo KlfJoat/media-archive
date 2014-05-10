@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Digitize-CD
+Comment=Automatically digitize a CD inserted in the drive
+Keywords=audio;album;tape;cd;disc;rip;
+Exec=/home/klfjoat/src/media-archive/test
+Icon=ogmrip
+Terminal=true
+Type=Application
+Categories=GNOME;AudioVideo;
+MimeType=x-content/audio-cdda;
+
