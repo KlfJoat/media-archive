@@ -1,5 +1,4 @@
 #!/bin/bash
-# digitize-cd
 #===================================================================================
 #
 #         FILE: digitize-cd
@@ -13,9 +12,10 @@
 #
 #      PROJECT: Media Collection (media-archive)
 #      OPTIONS: 
-# REQUIREMENTS: asdf
-# PACKAGES REQ: asdf
-#         BUGS: Probably dozens.
+# REQUIREMENTS: cdto1flac, 1flactoogg, mktemp, zenity
+# PACKAGES REQ: abcde
+#         BUGS: Doesn't do enough checking to ensure commands complete successfully,
+#               and then act appropriately.
 #        NOTES: ---
 #       AUTHOR: KlfJoat
 #      VERSION: 0.1
@@ -28,7 +28,7 @@ set -x
 ####### CHECK CONDITIONS #######
 ################################
 ### Check for necessary commands
-my_needed_commands="mktemp zenity"
+my_needed_commands="mktemp zenity" # + cdto1flac and 1flactoogg
 missing_counter=0
 for needed_command in $my_needed_commands; do
   if ! hash "$needed_command" >/dev/null 2>&1; then
