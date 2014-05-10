@@ -124,7 +124,7 @@ ripcount=$(grep --count "$ripregexp" /proc/mounts)
 if [[ $ripcount -eq 1 ]];
   # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
   # leaving only the rest of line. Which is the mount point including any 
-  # possible spaces.  "awk '{print $6}'" would work, except for spaces.
+  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
   $ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
 fi
 
@@ -133,7 +133,7 @@ transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
 if [[ $transcodecount -eq 1 ]];
   # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
   # leaving only the rest of line. Which is the mount point including any 
-  # possible spaces.  "awk '{print $6}'" would work, except for spaces.
+  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
   $transcodedrive=$(df -P | grep $transcoderegexp | perl -pe 's/^(\S+\s+){5}//')
 fi
 
