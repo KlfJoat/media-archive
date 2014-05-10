@@ -105,35 +105,58 @@ cp --verbose --recursive --no-clobber "$transcodedir" "$nastranscode"
 ####### COPY TO EXT HDD OR HOLDING AREA #######
 ###############################################
 ### Check for ext HDD
-#$ripdrive=extHDD
-#$transcodedrive=extHDD
-### Check for filename collision??
+ripregexp="\/Rip"
+transcoderegexp="\/Transcode"
 
-### Copy rip to ext HDD
-#if $ripdrive; then
-#cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"
-#else
-if [[ ! -d "$ripholding" ]]; then
-  mkdir -p "$ripholding"
+### First, make sure only one of each recognizable drive is attached.
+### Then, set the drives' mount points.  (easier way?)
+# Rip drive
+ripcount=$(grep --count "$ripregexp" /proc/mounts)
+if [[ $ripcount -eq 1 ]];
+  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
+  # leaving only the rest of line. Which is the mount point including any 
+  # possible spaces.  "awk '{print $6}'" would work, except for spaces.
+  $ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
 fi
-cp --verbose --recursive --no-clobber "$flacfile" "$ripholding"
-#fi
 
-### Copy transcode to ext HDD
-#if $transcodedrive; then
-#cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"
-#else
-if [[ ! -d "$transcodeholding" ]]; then
-  mkdir -p "$transcodeholding"
+# Transcode drive
+transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
+if [[ $transcodecount -eq 1 ]];
+  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
+  # leaving only the rest of line. Which is the mount point including any 
+  # possible spaces.  "awk '{print $6}'" would work, except for spaces.
+  $transcodedrive=$(df -P | grep $transcoderegexp | perl -pe 's/^(\S+\s+){5}//')
 fi
-cp --verbose --recursive --no-clobber "$transcodedir" "$transcodeholding"
-#fi
+
+### ??Check for filename collision??
+
+### Copy rip to ext HDD, if mounted; holding dir if not.
+if [[ "$ripdrive" ]]; then
+  cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"
+else
+  # Make holding directory if it doesn't exist
+  if [[ ! -d "$ripholding" ]]; then
+    mkdir -p "$ripholding"
+  fi
+  cp --verbose --recursive --no-clobber "$flacfile" "$ripholding"
+fi
+
+### Copy transcode to ext HDD, if mounted; holding dir if not.
+if [[ "$transcodedrive" ]]; then
+  cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"
+else
+  # Make holding directory if it doesn't exist
+  if [[ ! -d "$transcodeholding" ]]; then
+    mkdir -p "$transcodeholding"
+  fi
+  cp --verbose --recursive --no-clobber "$transcodedir" "$transcodeholding"
+fi
 
 ########################
 ####### CLEAN UP #######
 ########################
 ### Change back
-cd $olddir
+cd "$olddir"
 
 ### Delete rip & transcode
-/bin/rm -rf $TMPDIR
+/bin/rm -rf "$TMPDIR"
