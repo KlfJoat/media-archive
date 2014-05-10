@@ -141,6 +141,7 @@ fi
 
 ### Copy rip to ext HDD, if mounted; holding dir if not.
 if [[ "$ripdrive" ]]; then
+  mkdir --parents "$ripdrive"/"$dir_rip"
   cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"/"$dir_rip"
 else
   # Make holding directory if it doesn't exist
@@ -149,6 +150,7 @@ fi
 
 ### Copy transcode to ext HDD, if mounted; holding dir if not.
 if [[ "$transcodedrive" ]]; then
+  mkdir --parents "$transcodedrive"/"$dir_transcode"
   cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"/"$dir_transcode"
 else
   # Make holding directory if it doesn't exist
