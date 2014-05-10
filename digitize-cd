@@ -28,7 +28,7 @@ set -x
 ####### CHECK CONDITIONS #######
 ################################
 ### Check for necessary commands
-my_needed_commands="find /bin/rm mktemp pwd zenity"
+my_needed_commands="mktemp zenity"
 missing_counter=0
 for needed_command in $my_needed_commands; do
   if ! hash "$needed_command" >/dev/null 2>&1; then
@@ -41,7 +41,7 @@ if ((missing_counter > 0)); then
   exit 1
 fi
 
-### Check for enough HDD space.  ??43GB = 18GB + 25GB buffer
+### TODO: Check for enough HDD space.  ??43GB = 18GB + 25GB buffer
 
 ##############################
 ####### INITIALIZATION #######
@@ -50,6 +50,8 @@ fi
 workingdir="$HOME/tmp"
 nasrip="$HOME/Audio/Rips"
 nastranscode="$HOME/Audio/Music/MyCDs"
+ripholding="$HOME/tmp/MoveToRipDrive"
+transcodeholding="$HOME/tmp/MoveToTranscodeDrive"
 
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" cd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
@@ -92,11 +94,7 @@ if [[ -f "$nasrip/$flacfile" ]]; then
   zenity --error --text="$nasrip/$flacfile already exists!  Exiting."
   exit 1
 fi
-# Transcode collision??  (HOW???)
-#if [[ -f "$nastranscode/$transcodedir" ]]; then
-#  zenity --error --text="$nasrip/$flacfile already exists!  Exiting."
-#  exit 1
-#fi
+# Transcode collision - the copy below will complain if that's the case.
 
 ### Copy rip to NAS
 cp --verbose --recursive --no-clobber "$flacfile" "$nasrip"
@@ -107,15 +105,35 @@ cp --verbose --recursive --no-clobber "$transcodedir" "$nastranscode"
 ####### COPY TO EXT HDD OR HOLDING AREA #######
 ###############################################
 ### Check for ext HDD
-### Check for filename collision
+#$ripdrive=extHDD
+#$transcodedrive=extHDD
+### Check for filename collision??
+
 ### Copy rip to ext HDD
+#if $ripdrive; then
+#cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"
+#else
+if [[ ! -d "$ripholding" ]]; then
+  mkdir -p "$ripholding"
+fi
+cp --verbose --recursive --no-clobber "$flacfile" "$ripholding"
+#fi
+
 ### Copy transcode to ext HDD
+#if $transcodedrive; then
+#cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"
+#else
+if [[ ! -d "$transcodeholding" ]]; then
+  mkdir -p "$transcodeholding"
+fi
+cp --verbose --recursive --no-clobber "$transcodedir" "$transcodeholding"
+#fi
 
 ########################
 ####### CLEAN UP #######
 ########################
 ### Change back
-#? cd ..
 cd $olddir
+
 ### Delete rip & transcode
 /bin/rm -rf $TMPDIR
