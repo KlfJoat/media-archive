@@ -8,4 +8,5 @@ Terminal=true
 Type=Application
 Categories=GNOME;AudioVideo;
 MimeType=x-content/audio-cdda;
-
+#Add to ~/.local/share/applications/mimeapps.list:
+#x-content/audio-cdda=digitize-cd.desktop
