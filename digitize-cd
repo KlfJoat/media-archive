@@ -66,6 +66,15 @@ olddir=$(pwd)
 cd "$TMPDIR"
 
 ### Set up traps for program exit
+function clean_up {
+	# Perform program exit housekeeping
+  cd "$olddir"	# Change back
+	/bin/rm "$TMPDIR"   # Delete rip, transcode, and interim files
+    trap 0  # reset to default action
+	exit
+}
+
+trap clean_up 0 1 2 3 15
 
 ###########################################
 ####### DUAL - RIP AND GET CD INFO #######
@@ -158,8 +167,4 @@ fi
 ########################
 ####### CLEAN UP #######
 ########################
-### Change back
-cd "$olddir"
-
-### Delete rip & transcode
-/bin/rm -rf "$TMPDIR"
+### Because of "trap 0", the function clean_up runs here.
