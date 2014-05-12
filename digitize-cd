@@ -69,7 +69,7 @@ cd "$TMPDIR"
 function clean_up {
   # Perform program exit housekeeping
   cd "$olddir"	# Change back
-  /bin/rm "$TMPDIR"   # Delete rip, transcode, and interim files
+  /bin/rm -rf "$TMPDIR"   # Delete rip, transcode, and interim files
     trap 0  # reset to default action
   exit
 }
