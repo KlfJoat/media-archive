@@ -14,12 +14,14 @@
 #      OPTIONS: 
 # REQUIREMENTS: cdto1flac, 1flactoogg, mktemp, zenity
 # PACKAGES REQ: abcde
-#         BUGS: Doesn't do enough checking to ensure commands complete successfully,
-#               and then act appropriately.
+#         BUGS: * Doesn't do enough checking to ensure commands complete successfully,
+#                 and then act appropriately.
+#               * The invocation of 1flactoogg doesn't pull the same CDDB info as the
+#                 user selects during cdto1flac.  
 #        NOTES: TODO: Add support for specifying the CD drive on the command-line.
 #       AUTHOR: KlfJoat
-#      VERSION: 0.2
-#      CREATED: 2014-05-03 to 2014-05-10
+#      VERSION: 1.0
+#      CREATED: 2014-05-03 to 2014-05-11
 #     REVISION: ---
 #===================================================================================
 # Debug
