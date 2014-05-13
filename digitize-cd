@@ -30,7 +30,7 @@ set -x
 ####### CHECK CONDITIONS #######
 ################################
 ### Check for necessary commands
-my_needed_commands="mktemp zenity" # + cdto1flac and 1flactoogg
+my_needed_commands="mktemp zenity abcde" # + cdto1flac and 1flactoogg
 missing_counter=0
 for needed_command in $my_needed_commands; do
   if ! hash "$needed_command" >/dev/null 2>&1; then
@@ -81,7 +81,7 @@ trap clean_up 0 1 2 3 15
 ###########################################
 ####### DUAL - RIP AND GET CD INFO #######
 ###########################################
-$HOME/src/media-archive/cdto1flac
+abcde -1 -o flac -a default,cue
 
 ### Figure out FLAC filename (should be the only one in our temp directory)
 flacfile=$(find *.flac)
@@ -94,7 +94,7 @@ flacfile=$(find *.flac)
 #########################
 ####### TRANSCODE #######
 #########################
-$HOME/src/media-archive/1flactoogg "$flacfile"
+abcde -d "$flacfile" -N -o ogg
 
 ### Get directory of filename minus dirs and minus ext (use for transcode filename)
 transcodedir=$(find * -maxdepth 0 -type d)
