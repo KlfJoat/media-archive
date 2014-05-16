@@ -81,7 +81,7 @@ trap clean_up 0 1 2 3 15
 ###########################################
 ####### DUAL - RIP AND GET CD INFO #######
 ###########################################
-abcde -1 -e -k -o flac -a default,cue
+abcde -1 -o flac -a default,cue
 
 if [[ $? -ne 0 ]]; then
   echo "abcde exited with an error while creating a 1-file FLAC of the CD." >&2
@@ -105,7 +105,7 @@ fi
 #########################
 ####### TRANSCODE #######
 #########################
-abcde -N -o ogg
+abcde -d "$flacfile" -N -o ogg
 
 if [[ $? -ne 0 ]]; then
   echo "abcde exited with an error while creating transcodes of the 1-file FLAC." >&2
