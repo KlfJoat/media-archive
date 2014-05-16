@@ -131,12 +131,13 @@ if [[ -f "$nas_rip/$flacfile" ]]; then
   zenity --error --text="$nas_rip/$flacfile already exists!  Exiting."
   exit 1
 fi
-# Transcode collision - the copy below will complain if that's the case.
+
+# Transcode collision - No matter
 
 ### Copy rip to NAS
-cp --verbose --recursive --no-clobber "$flacfile" "$nas_rip"
+cp --verbose --recursive "$flacfile" "$nas_rip"
 ### Copy transcode to NAS
-cp --verbose --recursive --no-clobber "$transcodedir" "$nas_transcode"
+cp --verbose --recursive "$transcodedir" "$nas_transcode"
 
 ###############################################
 ####### COPY TO EXT HDD OR HOLDING AREA #######
@@ -169,21 +170,23 @@ fi
 
 ### Copy rip to ext HDD, if mounted; holding dir if not.
 if [[ "$ripdrive" ]]; then
-  mkdir --parents "$ripdrive"/"$dir_rip"
-  cp --verbose --recursive --no-clobber "$flacfile" "$ripdrive"/"$dir_rip"
+  dest="${ripdrive}/${dir_rip}"
 else
-  mkdir --parents "$holding_rip"/"$dir_rip"
-  cp --verbose --recursive --no-clobber "$flacfile" "$holding_rip"/"$dir_rip"
+  dest="${holding_rip}/${dir_rip}"
 fi
+
+mkdir --parents "$dest"
+cp --verbose --recursive "$flacfile" "$dest"
 
 ### Copy transcode to ext HDD, if mounted; holding dir if not.
 if [[ "$transcodedrive" ]]; then
-  mkdir --parents "$transcodedrive"/"$dir_transcode"
-  cp --verbose --recursive --no-clobber "$transcodedir" "$transcodedrive"/"$dir_transcode"
+  dest="${transcodedrive}/${dir_transcode}"
 else
-  mkdir --parents "$holding_transcode"/"$dir_transcode"
-  cp --verbose --recursive --no-clobber "$transcodedir" "$holding_transcode"/"$dir_transcode"
+  dest="${holding_transcode}/${dir_transcode}"
 fi
+
+mkdir --parents "$dest"
+cp --verbose --recursive "$transcodedir" "$dest"
 
 ########################
 ####### CLEAN UP #######
