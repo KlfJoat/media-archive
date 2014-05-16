@@ -126,11 +126,11 @@ fi
 ###########################
 ### Check for filename collision
 # Rip collision
-if [[ -f "$nas_rip/$flacfile" ]]; then
-  echo "$nas_rip/$flacfile already exists!  Exiting." >&2
-  zenity --error --text="$nas_rip/$flacfile already exists!  Exiting."
-  exit 1
-fi
+#if [[ -f "$nas_rip/$flacfile" ]]; then
+#  echo "$nas_rip/$flacfile already exists!  Exiting." >&2
+#  zenity --error --text="$nas_rip/$flacfile already exists!  Exiting."
+#  exit 1
+#fi
 
 # Transcode collision - No matter
 
