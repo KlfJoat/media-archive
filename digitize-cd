@@ -92,7 +92,11 @@ fi
 
 ### Figure out FLAC filename (should be the only one in our temp directory)
 flacfile=$(find *.flac)
-
+if [[ ! -f $flacfile ]]; then
+  echo "The rip did not create a FLAC file that could be discerned.  Exiting." >&2
+  echo "The value of flacfile is '$flacfile'" >&2
+  exit 1
+fi
 
 ###########################################
 #?????? ADD DISC TO TOC SPREADSHEET ???????
@@ -101,7 +105,7 @@ flacfile=$(find *.flac)
 #########################
 ####### TRANSCODE #######
 #########################
-abcde -d "$flacfile" -N -o ogg
+abcde -N -o ogg
 
 if [[ $? -ne 0 ]]; then
   echo "abcde exited with an error while creating transcodes of the 1-file FLAC." >&2
@@ -111,6 +115,11 @@ fi
 
 ### Get directory of filename minus dirs and minus ext (use for transcode filename)
 transcodedir=$(find * -maxdepth 0 -type d)
+if [[ ! -d $transcodedir ]]; then
+  echo "The second running of abcde did not create a transcode directory that could be found.  Exiting." >&2
+  echo "The value of transcodedir is '$transcodedir'" >&2
+  exit 1
+fi
 
 ###########################
 ####### COPY TO NAS #######
