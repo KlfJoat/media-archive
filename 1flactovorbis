@@ -18,3 +18,9 @@ else  # Otherwise, print usage and exit with error
   echo "See the abcde manpage for more information." >&2
   exit 1
 fi
+
+if [[ $? -ne 0 ]]; then
+  echo "abcde exited with an error while creating transcodes of the 1-file FLAC." >&2
+  echo "See the abcde manpage for more information." >&2
+  exit $?
+fi

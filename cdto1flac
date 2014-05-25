@@ -16,4 +16,10 @@ shift
 
 abcde -1 -d $cd_device -o flac -a default,cue
 
+if [[ $? -ne 0 ]]; then
+  echo "abcde exited with an error while creating a 1-file FLAC of the CD." >&2
+  echo "See the abcde manpage for more information." >&2
+  exit $?
+fi
+
 eject $cd_device &
