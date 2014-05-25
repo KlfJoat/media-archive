@@ -83,6 +83,9 @@ trap clean_up 0 1 2 3 15
 ###########################################
 abcde -1 -o flac -a default,cue
 
+# TODO: Replace the direct abcde calls back to calls to the wrapper scripts
+# TODO: Put this logic in the cdto1flac script.
+# TODO: Instead of exiting 1, exit with "$?"! :-)
 if [[ $? -ne 0 ]]; then
   echo "abcde exited with an error while creating a 1-file FLAC of the CD." >&2
   echo "See the abcde manpage for more information." >&2
