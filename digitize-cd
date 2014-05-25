@@ -81,15 +81,11 @@ trap clean_up 0 1 2 3 15
 ###########################################
 ####### DUAL - RIP AND GET CD INFO #######
 ###########################################
-abcde -1 -o flac -a default,cue
+$HOME/src/media-archive/cdto1flac
 
-# TODO: Replace the direct abcde calls back to calls to the wrapper scripts
-# TODO: Put this logic in the cdto1flac script.
-# TODO: Instead of exiting 1, exit with "$?"! :-)
 if [[ $? -ne 0 ]]; then
-  echo "abcde exited with an error while creating a 1-file FLAC of the CD." >&2
-  echo "See the abcde manpage for more information." >&2
-  exit 1
+  # The helper script already printed out an error message.
+  exit $?
 fi
 
 
@@ -108,12 +104,11 @@ fi
 #########################
 ####### TRANSCODE #######
 #########################
-abcde -d "$flacfile" -N -o ogg
+$HOME/src/media-archive/1flactovorbis "$flacfile"
 
 if [[ $? -ne 0 ]]; then
-  echo "abcde exited with an error while creating transcodes of the 1-file FLAC." >&2
-  echo "See the abcde manpage for more information." >&2
-  exit 1
+  # The helper script already printed out an error message.
+  exit $?
 fi
 
 ### Get directory of filename minus dirs and minus ext (use for transcode filename)
