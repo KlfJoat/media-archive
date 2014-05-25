@@ -1,5 +1,5 @@
 #!/bin/bash
-# 1flactoogg
+# 1flactovorbis
 
 # Debugging
 set -x
@@ -12,7 +12,7 @@ fi
 
 # If command-line argument is a filename that ends in ".flac", process it
 if [[ $1 =~ .flac$ ]]; then
-  abcde -d "$1" -N -o ogg
+  abcde -d "$1" -N -o vorbis
 else  # Otherwise, print usage and exit with error  
   echo "A FLAC file, especially with an embedded cuesheet, should be specified on the command-line." >&2
   echo "See the abcde manpage for more information." >&2
