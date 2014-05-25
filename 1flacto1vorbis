@@ -1,0 +1,20 @@
+#!/bin/bash
+# 1flacto1vorbis
+
+# Debugging
+set -x
+
+# Check for abcde before execution
+if ! hash "abcde" >/dev/null 2>&1; then
+  echo "Command not found in PATH: abcde" >&2
+  exit 1
+fi
+
+# If command-line argument is a filename that ends in ".flac", process it
+if [[ $1 =~ .flac$ ]]; then
+  abcde -1 -d "$1" -N -o vorbis
+else  # Otherwise, print usage and exit with error  
+  echo "A FLAC file, especially with an embedded cuesheet, should be specified on the command-line." >&2
+  echo "See the abcde manpage for more information." >&2
+  exit 1
+fi
