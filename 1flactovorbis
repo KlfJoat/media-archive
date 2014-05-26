@@ -2,7 +2,7 @@
 # 1flactovorbis
 
 # Debugging
-set -x
+#set -x
 
 # Check for abcde before execution
 if ! hash "abcde" >/dev/null 2>&1; then
