@@ -190,4 +190,7 @@ cp --verbose --recursive "$transcodedir" "$dest"
 ####### CLEAN UP #######
 ########################
 ### Because of "trap 0", the function clean_up runs here.
+
+# Pause so output can be reviewed before closng digitize-cd window.
+# TODO: Find a way to only execute this if digitize-cd was called from a .desktop file. 
 read -n1 -r -p "Press any key to close window..."
