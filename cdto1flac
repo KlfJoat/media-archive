@@ -22,4 +22,4 @@ if [[ $? -ne 0 ]]; then
   exit $?
 fi
 
-eject $cd_device &
+#eject $cd_device &
