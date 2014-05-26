@@ -190,3 +190,4 @@ cp --verbose --recursive "$transcodedir" "$dest"
 ####### CLEAN UP #######
 ########################
 ### Because of "trap 0", the function clean_up runs here.
+read -n1 -r -p "Press any key to close window..."
