@@ -12,25 +12,24 @@
 #
 #      PROJECT: Media Collection (media-archive)
 #      OPTIONS: 
-# REQUIREMENTS: cdto1flac, 1flactoogg, mktemp, zenity
+# REQUIREMENTS: cdto1flac, 1flactovorbis, mktemp, zenity, abcde, cdparanoia
 # PACKAGES REQ: abcde
-#         BUGS: * Doesn't do enough checking to ensure commands complete successfully,
-#                 and then act appropriately.
-#               * The invocation of 1flactoogg doesn't pull the same CDDB info as the
-#                 user selects during cdto1flac.  
+#         BUGS: * Doesn't need to pause if invoked from the command-line
 #        NOTES: TODO: Add support for specifying the CD drive on the command-line.
 #       AUTHOR: KlfJoat
-#      VERSION: 1.0--
-#      CREATED: 2014-05-03 to 2014-05-11
-#     REVISION: ---
+#      VERSION: 2.0
+#      CREATED: 2014-05-03
+#     REVISION: 0.1: 2014-05-03
+#               1.0: 2014-05-11
+#               2.0: 2014-05-27
 #===================================================================================
 # Debug
-set -x
+#set -x
 ################################
 ####### CHECK CONDITIONS #######
 ################################
 ### Check for necessary commands
-my_needed_commands="mktemp zenity abcde" # + cdto1flac and 1flactoogg
+my_needed_commands="mktemp zenity abcde cdparanoia" # + cdto1flac and 1flactoogg
 missing_counter=0
 for needed_command in $my_needed_commands; do
   if ! hash "$needed_command" >/dev/null 2>&1; then
