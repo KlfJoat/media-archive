@@ -12,7 +12,7 @@
 #
 #      PROJECT: Media Collection (media-archive)
 #      OPTIONS: 
-# REQUIREMENTS: dvdbackup
+# REQUIREMENTS: dvdtoiso, mktemp, zenity, dvdbackup
 # PACKAGES REQ: dvdbackup
 #         BUGS: Probably dozens.
 #        NOTES: ---
@@ -21,12 +21,13 @@
 #      CREATED: 2014-05-03
 #     REVISION: ---
 #===================================================================================
-
+# Debug
+set -x
 ################################
 ####### CHECK CONDITIONS #######
 ################################
 ### Check for necessary commands
-my_needed_commands="find basename /bin/rm mktemp pwd zenity"
+my_needed_commands="find basename mktemp zenity"
 missing_counter=0
 for needed_command in $my_needed_commands; do
   if ! hash "$needed_command" >/dev/null 2>&1; then
@@ -45,24 +46,60 @@ fi
 ##############################
 ####### INITIALIZATION #######
 ##############################
+### Variables
+workingdir="$HOME/tmp"
+nas_rip="$HOME/Videos/Rips"
+nas_transcode="$HOME/Videos/Movies"
+# TODO: Separate out Movie vs TV/Animation rip?
+holding_rip="$HOME/tmp/MoveToRipDrive"
+holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
+dir_rip="DVD-Rip"
+dir_transcode="DVD-Transcode"
+
+### Ensure directories are created for the working and NAS variables.
+mkdir --parents "$workingdir"
+mkdir --parents "$nas_rip"
+mkdir --parents "$nas_transcode"
+      
 ### Create temp dir
-TMPDIR=$(mktemp --quiet --directory --tmpdir=~/tmp) || { echo "Failed to create temp directory."; exit 1; }
+TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" dvd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
 olddir=$(pwd)
-cd $TMPDIR
+cd "$TMPDIR"
 
 ### Set up traps for program exit
+function clean_up {
+  # Perform program exit housekeeping
+  cd "$olddir"	# Change back
+  /bin/rm -rf "$TMPDIR"   # Delete rip, transcode, and interim files
+    trap 0  # reset to default action
+  exit
+}
+
+trap clean_up 0 1 2 3 15
 
 ###########################################
 ####### DUAL - RIP AND GET DVD INFO #######
 ###########################################
-dvdtoiso
+$HOME/src/media-archive/dvdtoiso
+
+if [[ $? -ne 0 ]]; then
+  # The helper script already printed out an error message.
+  exit $?
+fi
+
 
 ### Figure out ISO filename (should be the only one in our temp directory)
 isofile=$(find *.iso)
+if [[ ! -f $isofile ]]; then
+  echo "The rip did not create an ISO file that could be discerned.  Exiting." >&2
+  echo "The value of isofile is '$isofile'" >&2
+  exit 1
+fi
 
 # Get filename minus dirs and minus ext (use for transcode filename)
-basename=$(basename --suffix=.iso $isofile)
-transcodefilename="$basename.mkv"
+#basename=$(basename --suffix=.iso $isofile)
+#transcodefilename="$basename.mkv"
+
 
 ###########################################
 #?????? ADD DISC TO TOC SPREADSHEET ???????
@@ -71,26 +108,84 @@ transcodefilename="$basename.mkv"
 #########################
 ####### TRANSCODE #######
 #########################
+#$HOME/src/media-archive/1flactovorbis "$flacfile"
+
+#if [[ $? -ne 0 ]]; then
+#  # The helper script already printed out an error message.
+#  exit $?
+#fi
+
+### Get directory of filename minus dirs and minus ext (use for transcode filename)
+#transcodedir=$(find * -maxdepth 0 -type d)
+#if [[ ! -d $transcodedir ]]; then
+#  echo "The second running of abcde did not create a transcode directory that could be found.  Exiting." >&2
+#  echo "The value of transcodedir is '$transcodedir'" >&2
+#  exit 1
+#fi
 
 ###########################
 ####### COPY TO NAS #######
 ###########################
-### Check for filename collision
+
 ### Copy rip to NAS
+cp --verbose --recursive "$isofile" "$nas_rip"
 ### Copy transcode to NAS
+#cp --verbose --recursive "$transcodedir" "$nas_transcode"
 
 ###############################################
 ####### COPY TO EXT HDD OR HOLDING AREA #######
 ###############################################
-### Check for ext HDD
-### Check for filename collision
-### Copy rip to ext HDD
-### Copy transcode to ext HDD
+# Variables - RegExps to use.
+#ripregexp="\/Rip"
+#transcoderegexp="\/Transcode"
+
+### First, make sure only one of each recognizable drive is attached.
+### Then, set the drives' mount points. 
+# Find 1 Rip drive
+#ripcount=$(grep --count "$ripregexp" /proc/mounts)
+#if [[ $ripcount -eq 1 ]]; then
+#  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
+#  # leaving only the rest of line. Which is the mount point including any 
+#  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
+#  ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
+#fi
+
+# Find 1 Transcode drive
+#transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
+#if [[ $transcodecount -eq 1 ]]; then
+#  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
+#  # leaving only the rest of line. Which is the mount point including any 
+#  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
+#  transcodedrive=$(df -P | grep $transcoderegexp | perl -pe 's/^(\S+\s+){5}//')
+#fi
+
+### ??Check for filename collision??
+
+### Copy rip to ext HDD, if mounted; holding dir if not.
+#if [[ "$ripdrive" ]]; then
+#  dest="${ripdrive}/${dir_rip}"
+#else
+  dest="${holding_rip}/${dir_rip}"
+#fi
+
+mkdir --parents "$dest"
+cp --verbose --recursive "$isofile" "$dest"
+
+### Copy transcode to ext HDD, if mounted; holding dir if not.
+#if [[ "$transcodedrive" ]]; then
+#  dest="${transcodedrive}/${dir_transcode}"
+#else
+#  dest="${holding_transcode}/${dir_transcode}"
+#fi
+
+#mkdir --parents "$dest"
+#cp --verbose --recursive "$transcodedir" "$dest"
 
 ########################
 ####### CLEAN UP #######
 ########################
-### Change back
-cd $olddir
-### Delete rip and transcode
-#/bin/rm -rf $TMPDIR
+### Because of "trap 0", the function clean_up runs here.
+
+# Pause so output can be reviewed before closng digitize-dvd window.
+# TODO: Find a way to only execute this if digitize-dvd was called from a .desktop file. 
+read -n1 -r -p "Press any key to close window..."
