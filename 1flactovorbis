@@ -11,7 +11,7 @@ if ! hash "abcde" >/dev/null 2>&1; then
 fi
 
 # If command-line argument is a filename that ends in ".flac", process it
-if [[ $1 =~ .flac$ ]]; then
+if [[ $1 =~ .flac$ && -f $1 ]]; then
   abcde -d "$1" -N -o vorbis
 else  # Otherwise, print usage and exit with error  
   echo "A FLAC file, especially with an embedded cuesheet, should be specified on the command-line." >&2
