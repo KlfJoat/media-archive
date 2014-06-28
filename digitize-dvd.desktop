@@ -2,7 +2,7 @@
 Name=Digitize-DVD
 Comment=Automatically digitize a DVD inserted in the drive
 Keywords=video;movie;film;dvd;disc;rip;
-Exec=/home/klfjoat/src/media-archive/test
+Exec=/home/klfjoat/src/media-archive/digitize-dvd
 Icon=ogmrip
 Terminal=true
 Type=Application
