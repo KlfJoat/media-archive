@@ -24,7 +24,7 @@ dvd_device=${1:-/dev/sr0}
 shift
 
 # Grab a sensible default title from the disc itself
-title=`dvdbackup --info --input=$dvd_device 2>/dev/null | grep 'DVD-Video information of the DVD with title' | sed -e 's/.* title \"//' | sed -e 's/\"$//'`
+title=$(dvdbackup --info --input=$dvd_device 2>/dev/null | grep 'DVD-Video information of the DVD with title' | sed -e 's/.* title \"//' | sed -e 's/\"$//')
 
 # If empty title, create a lame one for our use
 if [ "$title" = "" ] ; then
