@@ -114,7 +114,7 @@ while : ; do
     
     ### Parse the menu selection
     [[ -z "$selection" ]] && break
-    if [[ ( ! $selection =~ ^[xpeqh] ) || ${selection:1} > ${#thetitles[@]} ]]; then
+    if [[ ( ! $selection =~ ^[xpeqh] ) || ${selection:1} -gt ${#thetitles[@]} ]]; then
         echo "Invalid selection"
         continue
     fi
@@ -133,7 +133,7 @@ while : ; do
                     willrip[$myind]=$xval
                     (( myind++ ))
                 done
-            else # TODO: BUG!  It won't toggle anything besides id 1!!! Brush up on my bash arrays!
+            else 
                 # they specified N (in ${selection:1}). toggle selection.
                 if [[ "${willrip[${selection:1}]}" == "x" ]]; then
                     willrip[${selection:1}]=""
@@ -195,7 +195,7 @@ fi
 #################################
 ##### Do the actual ripping #####
 #################################
-HANDBRAKE_BASE_CMD="HandBrakeCLI --input \"$output_iso\" --preset \"$HANDBRAKE_PROFILE\""
+#HANDBRAKE_BASE_CMD="HandBrakeCLI --input \"$output_iso\" --preset \"$HANDBRAKE_PROFILE\""
 
 logfile=$(mktemp)
 
@@ -216,10 +216,10 @@ for thetitle in "${thetitles[@]}"; do
             (( extraind++ ))
         fi
         outfile=$final_output_dir/${movie_title}${extrafilestuff}.$HANDBRAKE_OUTPUT_FORMAT
-        handbrake_cmd="HandBrakeCLI --input \"$output_iso\" --preset \"$HANDBRAKE_PROFILE\" --output $outfile --title $titleid"
+        handbrake_cmd="HandBrakeCLI --input \"$output_iso\" --preset \"$HANDBRAKE_PROFILE\" -E ffaac --output $outfile --title $titleid"
         echo "ripping title $titleid with the following command:"
         echo $handbrake_cmd
-        HandBrakeCLI --input "$output_iso" --preset "$HANDBRAKE_PROFILE" --output "$outfile" --title $titleid >> $logfile 2>&1
+        HandBrakeCLI --input "$output_iso" --preset "$HANDBRAKE_PROFILE" -E ffaac --output "$outfile" --title $titleid >> $logfile 2>&1
         grep -q "No title found" $logfile
         [[ $? -eq 0 ]] && {
             echo
