@@ -79,6 +79,8 @@ ismainfeature=()
 for thetitle in "${thetitles[@]}"; do
     willrip[$titleid]=x
     # mark title a main feature if it's more than 15 minutes long
+    # 1st AWK: 4th col of lsdvd output is time
+    # 2nd AWK: Set Field Separator to colon. 1st col (hour) > 0 OR 2nd col (min) > 15 THEN set Main Feature
     ismainfeature[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 > 0 || $2 > 15) print "x"}')
     (( titleid++ ))
 done
