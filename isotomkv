@@ -61,11 +61,11 @@ if ! lsdvd "$DVDDEVICE" > /dev/null 2>&1; then
     exit 1
 fi
 
-movie_title=$(lsdvd "$DVDDEVICE" 2>/dev/null | grep 'Disc Title' | awk '{print $3}')
+movie_title=$(basename --suffix=.iso "$DVDDEVICE")
 
-final_output_dir=$OUTPUTDIR/$movie_title
-mkdir -p $final_output_dir
-output_iso=$final_output_dir/${movie_title}.iso
+final_output_dir="$OUTPUTDIR"/"$movie_title"
+mkdir -p "$final_output_dir"
+output_iso="$final_output_dir"/"${movie_title}.iso"
 # set output iso to dvd device if they gave an ISO
 if [[ $DVDDEVICE =~ .iso$ ]]; then
     output_iso="$DVDDEVICE"
@@ -242,8 +242,8 @@ for thetitle in "${thetitles[@]}"; do
             extrafilestuff+="_extra_${extraind}"
             (( extraind++ ))
         fi
-        outfile=$final_output_dir/${movie_title}${extrafilestuff}.$HANDBRAKE_OUTPUT_FORMAT
-        handbrake_cmd="HandBrakeCLI --input \"$output_iso\" --preset \"$HANDBRAKE_PROFILE\" -E ffaac --output $outfile --title $titleid"
+        outfile="$final_output_dir"/"${movie_title}${extrafilestuff}.$HANDBRAKE_OUTPUT_FORMAT"
+        handbrake_cmd="HandBrakeCLI --input \"$output_iso\" --preset \"$HANDBRAKE_PROFILE\" -E ffaac --output \"$outfile\" --title $titleid"
         echo "ripping title $titleid with the following command:"
         echo $handbrake_cmd
         HandBrakeCLI --input "$output_iso" --preset "$HANDBRAKE_PROFILE" -E ffaac --output "$outfile" --title $titleid >> $logfile 2>&1
