@@ -37,6 +37,12 @@ DORIP=${DORIP:-yes}
 HANDBRAKE_PROFILE=${HANDBRAKE_PROFILE:-"High Profile"}
 # mp4, m4v, mkv
 HANDBRAKE_OUTPUT_FORMAT=${HANDBRAKE_OUTPUT_FORMAT:-mkv}
+# Title Select Mode (default to movies)
+# Options: Movie, TV, Animated Shorts
+# Movie = > 1hr
+# TV = 22 to 45 min
+# Animated = 6 to 8? min
+TITLEMODE=${TITLEMODE:-movie}
 
 ### Check for some necessary programs
 found_everything=yes
@@ -77,7 +83,26 @@ titleid=1
 willrip=()
 ismainfeature=()
 for thetitle in "${thetitles[@]}"; do
-    willrip[$titleid]=x
+    # ORIGINAL    
+    #willrip[$titleid]=x
+    
+    # MY MODIFICATION
+    case ${TITLEMODE:0:1} in
+        M|m)  # Movie mode (>1hr)
+          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 > 0 ) print "x"}')
+          ;;
+        T|t)  # TV mode (22>x<45)
+          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (22 <= $2 && $2 < 45)) print "x"}')
+          ;;
+        A|a)  # Animated Short mode (6>x<8?)
+          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (6 <= $2 && $2 <= 8)) print "x"}')
+          ;;
+        *)    # Nonsensical TITLEMODE 
+          echo "The TITLEMODE variable is not set to one of: Movie, TV, or Animated Short."
+          echo "The current value is $TITLEMODE."
+          exit 1
+          ;;
+    esac
     # mark title a main feature if it's more than 15 minutes long
     # 1st AWK: 4th col of lsdvd output is time
     # 2nd AWK: Set Field Separator to colon. 1st col (hour) > 0 OR 2nd col (min) > 15 THEN set Main Feature
