@@ -41,7 +41,7 @@ HANDBRAKE_OUTPUT_FORMAT=${HANDBRAKE_OUTPUT_FORMAT:-mkv}
 # Options: Movie, TV, Animated Shorts
 # Movie = > 1hr
 # TV = 22 to 45 min
-# Animated = 6 to 8? min
+# Animated = 6 to 10 min
 TITLEMODE=${TITLEMODE:-movie}
 
 ### Check for some necessary programs
@@ -94,8 +94,8 @@ for thetitle in "${thetitles[@]}"; do
         T|t)  # TV mode (22>x<45)
           willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (22 <= $2 && $2 < 45)) print "x"}')
           ;;
-        A|a)  # Animated Short mode (6>x<8?)
-          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (6 <= $2 && $2 <= 8)) print "x"}')
+        A|a)  # Animated Short mode (6>x<10)
+          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (6 <= $2 && $2 <= 10)) print "x"}')
           ;;
         *)    # Nonsensical TITLEMODE 
           echo "The TITLEMODE variable is not set to one of: Movie, TV, or Animated Short."
