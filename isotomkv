@@ -13,26 +13,11 @@ if [[ $1 == "-h" || $1 == "--help" || $# -gt 2 ]]; then
     exit 1
 fi
 
-print_help_menu()
-{
-    cat <<"EOF"
-Toggle rip selection:
-   Controls whether or not the title will be ripped
-
-Preview
-   Launches a preview of the title in a separate video player
-
-Toggle main feature
-   Controls whether or not the title is considered a "main feature"
-   (This only affects the resulting filename, nothing more).
-
-EOF
-}
 
 ### Some params that can be overridden:
-DVDDEVICE=${1:-/dev/sr0}
+#DVDDEVICE=${1:-/dev/sr0}
 OUTPUTDIR=${OUTPUTDIR:-/home/klfjoat/tmp}
-DORIP=${DORIP:-yes}
+#DORIP=${DORIP:-yes}
 # Android, Android Tablet (size constrained); Normal, High Profile (quality constraint)
 HANDBRAKE_PROFILE=${HANDBRAKE_PROFILE:-"High Profile"}
 # mp4, m4v, mkv
@@ -65,12 +50,12 @@ movie_title=$(basename --suffix=.iso "$DVDDEVICE")
 
 final_output_dir="$OUTPUTDIR"/"$movie_title"
 mkdir -p "$final_output_dir"
-output_iso="$final_output_dir"/"${movie_title}.iso"
-# set output iso to dvd device if they gave an ISO
-if [[ $DVDDEVICE =~ .iso$ ]]; then
+#output_iso="$final_output_dir"/"${movie_title}.iso"
+## set output iso to dvd device if they gave an ISO
+#if [[ $DVDDEVICE =~ .iso$ ]]; then
     output_iso="$DVDDEVICE"
-    DORIP=no
-fi
+#    DORIP=no
+#fi
 
 ### Read the DVD titles into an array
 thetitles=()
@@ -208,15 +193,15 @@ done
 
 
 ### Rip DVD if user asked us to 
-if [[ -e "$output_iso" && $DORIP == yes ]]; then
-    read -p "$output_iso already exists. Do you really want to rip the iso again? [y/n] " DORIP
-fi
+#if [[ -e "$output_iso" && $DORIP == yes ]]; then
+#    read -p "$output_iso already exists. Do you really want to rip the iso again? [y/n] " DORIP
+#fi
 
-if [[ ! $DORIP =~ ^[nN] ]]; then
-    echo "saving the DVD iso to ${output_iso}..."
-    # TODO: dd is ebil!  Change this.
-    dd if="$DVDDEVICE" | pv > "$output_iso"
-fi
+#if [[ ! $DORIP =~ ^[nN] ]]; then
+#    echo "saving the DVD iso to ${output_iso}..."
+#    # TODO: dd is ebil!  Change this.
+#    dd if="$DVDDEVICE" | pv > "$output_iso"
+#fi
 
 
 #################################
