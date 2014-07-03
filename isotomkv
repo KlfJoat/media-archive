@@ -68,9 +68,6 @@ titleid=1
 willrip=()
 ismainfeature=()
 for thetitle in "${thetitles[@]}"; do
-    # ORIGINAL    
-    #willrip[$titleid]=x
-    
     # MY MODIFICATION
     case ${TITLEMODE:0:1} in
         M|m)  # Movie mode (>1hr)
