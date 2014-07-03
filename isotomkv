@@ -5,7 +5,7 @@
 #################
 ##### Usage #####
 #################
-if [[ $1 == "-h" || $1 == "--help" || $# -gt 2 ]]; then
+if [[ $1 == "-h" || $1 == "--help" || $# -ne 1 ]]; then
     echo "Usage: ripdvd.sh [dvd-device or iso]"
     echo
     echo "There are a few other parameters that can be overridden."
@@ -16,6 +16,7 @@ fi
 
 ### Some params that can be overridden:
 #DVDDEVICE=${1:-/dev/sr0}
+DVDDEVICE="$1"
 OUTPUTDIR=${OUTPUTDIR:-/home/klfjoat/tmp}
 #DORIP=${DORIP:-yes}
 # Android, Android Tablet (size constrained); Normal, High Profile (quality constraint)
