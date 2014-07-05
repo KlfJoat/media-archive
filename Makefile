@@ -3,13 +3,13 @@ VERSION=2.1
 
 DIRS=.local bin
 INSTALL_DIRS=`find $(DIRS) -type d 2>/dev/null`
-INSTALL_FILES=`find $(DIRS) -type f 2>/dev/null`
+INSTALL_FILES=`find $(DIRS) -not -name "*~" -type f 2>/dev/null`
 
 PKG_DIR=pkg
 PKG_NAME=$(NAME)-$(VERSION)
 PKG=$(PKG_DIR)/$(PKG_NAME).tar.gz
 
-PREFIX?=$HOME
+PREFIX?=$(HOME)
 
 pkg:
 	mkdir -p $(PKG_DIR)
