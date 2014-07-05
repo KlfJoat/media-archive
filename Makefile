@@ -1,5 +1,5 @@
 NAME=media-archive
-VERSION=2.1
+VERSION=2.1.1
 
 DIRS=.local bin
 INSTALL_DIRS=`find $(DIRS) -type d 2>/dev/null`
