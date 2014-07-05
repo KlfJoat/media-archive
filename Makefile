@@ -1,18 +1,15 @@
-NAME=project
-VERSION=0.0.1
+NAME=media-archive
+VERSION=2.1
 
-DIRS=etc lib bin sbin share
+DIRS=.local bin
 INSTALL_DIRS=`find $(DIRS) -type d 2>/dev/null`
 INSTALL_FILES=`find $(DIRS) -type f 2>/dev/null`
-DOC_FILES=*.md *.txt
 
 PKG_DIR=pkg
 PKG_NAME=$(NAME)-$(VERSION)
 PKG=$(PKG_DIR)/$(PKG_NAME).tar.gz
-SIG=$(PKG_DIR)/$(PKG_NAME).asc
 
-PREFIX?=/usr/local
-DOC_DIR=$(PREFIX)/share/doc/$(PKG_NAME)
+PREFIX?=$HOME
 
 pkg:
 	mkdir -p $(PKG_DIR)
@@ -22,15 +19,10 @@ $(PKG): pkg
 
 build: $(PKG)
 
-$(SIG): $(PKG)
-	gpg --sign --detach-sign --armor $(PKG)
-
-sign: $(SIG)
-
 clean:
-	rm -f $(PKG) $(SIG)
+	rm -f $(PKG)
 
-all: $(PKG) $(SIG)
+all: $(PKG) 
 
 test:
 
@@ -38,17 +30,14 @@ tag:
 	git tag v$(VERSION)
 	git push --tags
 
-release: $(PKG) $(SIG) tag
+release: $(PKG) tag
 
 install:
 	for dir in $(INSTALL_DIRS); do mkdir -p $(PREFIX)/$$dir; done
 	for file in $(INSTALL_FILES); do cp $$file $(PREFIX)/$$file; done
-	mkdir -p $(DOC_DIR)
-	cp -r $(DOC_FILES) $(DOC_DIR)/
 
 uninstall:
 	for file in $(INSTALL_FILES); do rm -f $(PREFIX)/$$file; done
-	rm -rf $(DOC_DIR)
 
 
 .PHONY: build sign clean test tag release install uninstall all
