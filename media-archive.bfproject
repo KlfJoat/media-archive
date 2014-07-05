@@ -1,8 +1,9 @@
 c2e.convert_special: 0
 e2c.convert_num: 0
-openfiles: /home/klfjoat/src/media-archive/digitize-dvd:2111:1049:0:
-openfiles: /home/klfjoat/src/media-archive/dvdtoiso:0:0:1:
+openfiles: /home/klfjoat/src/media-archive/digitize-dvd:3116:2556:0:
+openfiles: /home/klfjoat/src/media-archive/dvdtoiso:2379:0:0:
 openfiles: /home/klfjoat/src/media-archive/init-media-drive:243:0:0:
+openfiles: /home/klfjoat/src/media-archive/isotomkv:926:162:1:
 snr_recursion_level: 5
 convertcolumn_horizontally: 0
 adv_open_matchname: 0
@@ -17,6 +18,7 @@ c2e.convert_iso: 0
 opendir: file:///home/klfjoat/src/media-archive
 wrap_text_default: 0
 bookmarks_filename_mode: 0
+ssearch_text: DVDDEVICE
 snr_casesens: 0
 view_blocks: 1
 name: media-archive
@@ -45,10 +47,11 @@ recent_files: file:///home/klfjoat/src/media-archive/cdto1flac
 recent_files: file:///home/klfjoat/src/media-archive/1flactovorbis
 recent_files: file:///home/klfjoat/src/media-archive/digitize-cd.desktop
 recent_files: file:///home/klfjoat/src/media-archive/digitize-dvd.desktop
-recent_files: file:///home/klfjoat/src/media-archive/digitize-dvd
-recent_files: file:///home/klfjoat/src/media-archive/dvdtoiso
 recent_files: file:///home/klfjoat/src/media-archive/digitize-cd
+recent_files: file:///home/klfjoat/src/media-archive/dvdtoiso
 recent_files: file:///home/klfjoat/src/media-archive/init-media-drive
+recent_files: file:///home/klfjoat/src/media-archive/digitize-dvd
+recent_files: file:///home/klfjoat/src/media-archive/isotomkv
 snr_replacetype: 0
 savedir: file:///home/klfjoat/src/media-archive
 spell_check_default: 1
@@ -64,6 +67,8 @@ searchlist: ripholding
 searchlist: transcodeholding
 searchlist: nasrip
 searchlist: nastranscode
+searchlist: 1
+searchlist: DVDDEVICE
 autocomplete: 1
 outputb_show_all_output: 0
 bookmarks_show_mode: 0
