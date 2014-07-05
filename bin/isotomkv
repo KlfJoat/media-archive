@@ -17,7 +17,7 @@ fi
 ### Some params that can be overridden:
 #DVDDEVICE=${1:-/dev/sr0}
 DVDDEVICE="$1"
-OUTPUTDIR=${OUTPUTDIR:-/home/klfjoat/tmp}
+OUTPUTDIR=${OUTPUTDIR:-$HOME/tmp}
 #DORIP=${DORIP:-yes}
 # Android, Android Tablet (size constrained); Normal, High Profile (quality constraint)
 HANDBRAKE_PROFILE=${HANDBRAKE_PROFILE:-"High Profile"}
