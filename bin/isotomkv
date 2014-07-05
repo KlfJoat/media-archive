@@ -96,98 +96,98 @@ done
 #######################
 ##### Do the menu #####
 #######################
-while : ; do
-    titleid=1
-    echo
-    echo
-    echo "[selected] [ismainfeature] [ id] Title..."
-    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    for title in "${thetitles[@]}"; do
-        titleid_formatted=$(printf "%3d" $titleid)
-        willrip_formatted=$(printf "%1s" ${willrip[$titleid]})
-        ismainfeature_formatted=$(printf "%1s" ${ismainfeature[$titleid]})
-        echo " [$willrip_formatted] [$ismainfeature_formatted] [$titleid_formatted] $title"
-        (( titleid++ ))
-    done
-    echo
-    echo "Menu:"
-    echo "xN : Toggle rip selection for title N"
-    echo " (omit N to select/deselect all)"
-    echo "pN : Preview title N"
-    echo "eN : Toggle title N as a main feature"
-    echo " (omit N to select/deselect all)"
-    echo "q : Quit"
-    echo "h : Help"
-    echo '<enter> : Go!'
-    echo
-    read -p " >>> " selection
-    
-    ### Parse the menu selection
-    [[ -z "$selection" ]] && break
-    if [[ ( ! $selection =~ ^[xpeqh] ) || ${selection:1} -gt ${#thetitles[@]} ]]; then
-        echo "Invalid selection"
-        continue
-    fi
-    case ${selection:0:1} in
-        x*)
-            if [[ -z "${selection:1}" ]]; then
-                # they omitted N, toggle all
-                if [[ ${willrip[1]} == "x" ]]; then
-                    xval=""
-                else
-                    xval="x"
-                fi
+#while : ; do
+#    titleid=1
+#    echo
+#    echo
+#    echo "[selected] [ismainfeature] [ id] Title..."
+#    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+#    for title in "${thetitles[@]}"; do
+#        titleid_formatted=$(printf "%3d" $titleid)
+#        willrip_formatted=$(printf "%1s" ${willrip[$titleid]})
+#        ismainfeature_formatted=$(printf "%1s" ${ismainfeature[$titleid]})
+#        echo " [$willrip_formatted] [$ismainfeature_formatted] [$titleid_formatted] $title"
+#        (( titleid++ ))
+#    done
+#    echo
+#    echo "Menu:"
+#    echo "xN : Toggle rip selection for title N"
+#    echo " (omit N to select/deselect all)"
+#    echo "pN : Preview title N"
+#    echo "eN : Toggle title N as a main feature"
+#    echo " (omit N to select/deselect all)"
+#    echo "q : Quit"
+#    echo "h : Help"
+#    echo '<enter> : Go!'
+#    echo
+#    read -p " >>> " selection
+#    
+#    ### Parse the menu selection
+#    [[ -z "$selection" ]] && break
+#    if [[ ( ! $selection =~ ^[xpeqh] ) || ${selection:1} -gt ${#thetitles[@]} ]]; then
+#        echo "Invalid selection"
+#        continue
+#    fi
+#    case ${selection:0:1} in
+#        x*)
+#            if [[ -z "${selection:1}" ]]; then
+#                # they omitted N, toggle all
+#                if [[ ${willrip[1]} == "x" ]]; then
+#                    xval=""
+#                else
+#                    xval="x"
+#                fi
 
-                myind=1
-                for bogus in "${willrip[@]}"; do
-                    willrip[$myind]=$xval
-                    (( myind++ ))
-                done
-            else 
-                # they specified N (in ${selection:1}). toggle selection.
-                if [[ "${willrip[${selection:1}]}" == "x" ]]; then
-                    willrip[${selection:1}]=""
-                else
-                    willrip[${selection:1}]="x"
-                fi
-            fi
-            ;;
-        e*)
-            if [[ -z "${selection:1}" ]]; then
-                # they omitted N, toggle all
-                if [[ ${ismainfeature[1]} == "x" ]]; then
-                    xval=""
-                else
-                    xval="x"
-                fi
+#                myind=1
+#                for bogus in "${willrip[@]}"; do
+#                    willrip[$myind]=$xval
+#                    (( myind++ ))
+#                done
+#            else 
+#                # they specified N (in ${selection:1}). toggle selection.
+#                if [[ "${willrip[${selection:1}]}" == "x" ]]; then
+#                    willrip[${selection:1}]=""
+#                else
+#                    willrip[${selection:1}]="x"
+#                fi
+#            fi
+#            ;;
+#        e*)
+#            if [[ -z "${selection:1}" ]]; then
+#                # they omitted N, toggle all
+#                if [[ ${ismainfeature[1]} == "x" ]]; then
+#                    xval=""
+#                else
+#                    xval="x"
+#                fi
 
-                myind=1
-                for bogus in "${willrip[@]}"; do
-                    ismainfeature[$myind]=$xval
-                    (( myind++ ))
-                done
-            else
-                if [[ "${ismainfeature[${selection:1}]}" == "x" ]]; then
-                    ismainfeature[${selection:1}]=""
-                else
-                    ismainfeature[${selection:1}]="x"
-                fi
-            fi
-            ;;
-        p*)
-            mplayer dvd://${selection:1}/"$DVDDEVICE"
-            ;;
-        q)
-            echo "Bye"
-            exit 1
-            ;;
-        h)
-            print_help_menu
-            echo "Press enter to continue..."
-            read bogus
-            ;;
-    esac
-done
+#                myind=1
+#                for bogus in "${willrip[@]}"; do
+#                    ismainfeature[$myind]=$xval
+#                    (( myind++ ))
+#                done
+#            else
+#                if [[ "${ismainfeature[${selection:1}]}" == "x" ]]; then
+#                    ismainfeature[${selection:1}]=""
+#                else
+#                    ismainfeature[${selection:1}]="x"
+#                fi
+#            fi
+#            ;;
+#        p*)
+#            mplayer dvd://${selection:1}/"$DVDDEVICE"
+#            ;;
+#        q)
+#            echo "Bye"
+#            exit 1
+#            ;;
+#        h)
+#            print_help_menu
+#            echo "Press enter to continue..."
+#            read bogus
+#            ;;
+#    esac
+#done
 
 
 ### Rip DVD if user asked us to 
