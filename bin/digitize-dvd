@@ -80,7 +80,7 @@ trap clean_up 0 1 2 3 15
 ###########################################
 ####### DUAL - RIP AND GET DVD INFO #######
 ###########################################
-$HOME/src/media-archive/dvdtoiso
+dvdtoiso
 
 if [[ $? -ne 0 ]]; then
   # The helper script already printed out an error message.
@@ -108,15 +108,17 @@ fi
 #########################
 ####### TRANSCODE #######
 #########################
-#$HOME/src/media-archive/1flactovorbis "$flacfile"
+#OUTPUTDIR="$TMPDIR" isotomkv "$isofile"
+#isotomkv "$isofile"  # Tmp: Output to default location, $HOME/tmp
 
 #if [[ $? -ne 0 ]]; then
 #  # The helper script already printed out an error message.
 #  exit $?
 #fi
 
-### Get directory of filename minus dirs and minus ext (use for transcode filename)
-#transcodedir=$(find * -maxdepth 0 -type d)
+### Get the transcode filename(s) 
+#==== Work below here.
+#transcodedir=$(find *.mkv -type f)
 #if [[ ! -d $transcodedir ]]; then
 #  echo "The second running of abcde did not create a transcode directory that could be found.  Exiting." >&2
 #  echo "The value of transcodedir is '$transcodedir'" >&2
@@ -136,19 +138,19 @@ cp --verbose --recursive "$isofile" "$nas_rip"
 ####### COPY TO EXT HDD OR HOLDING AREA #######
 ###############################################
 # Variables - RegExps to use.
-#ripregexp="\/Rip"
+ripregexp="\/Rip"
 #transcoderegexp="\/Transcode"
 
 ### First, make sure only one of each recognizable drive is attached.
 ### Then, set the drives' mount points. 
 # Find 1 Rip drive
-#ripcount=$(grep --count "$ripregexp" /proc/mounts)
-#if [[ $ripcount -eq 1 ]]; then
-#  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
-#  # leaving only the rest of line. Which is the mount point including any 
-#  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
-#  ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
-#fi
+ripcount=$(grep --count "$ripregexp" /proc/mounts)
+if [[ $ripcount -eq 1 ]]; then
+  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
+  # leaving only the rest of line. Which is the mount point including any 
+  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
+  ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
+fi
 
 # Find 1 Transcode drive
 #transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
@@ -162,11 +164,11 @@ cp --verbose --recursive "$isofile" "$nas_rip"
 ### ??Check for filename collision??
 
 ### Copy rip to ext HDD, if mounted; holding dir if not.
-#if [[ "$ripdrive" ]]; then
-#  dest="${ripdrive}/${dir_rip}"
-#else
+if [[ "$ripdrive" ]]; then
+  dest="${ripdrive}/${dir_rip}"
+else
   dest="${holding_rip}/${dir_rip}"
-#fi
+fi
 
 mkdir --parents "$dest"
 cp --verbose --recursive "$isofile" "$dest"
