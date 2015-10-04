@@ -15,11 +15,14 @@
 # REQUIREMENTS: dvdtoiso, mktemp, zenity, dvdbackup
 # PACKAGES REQ: dvdbackup
 #         BUGS: Probably dozens.
-#        NOTES: ---
+#        NOTES: TODO: Figure out if there's a way to determine Animated, TV, or
+#               Movie in some automated fashion.  
 #       AUTHOR: KlfJoat
-#      VERSION: 0.1
+#      VERSION: 0.3
 #      CREATED: 2014-05-03
-#     REVISION: ---
+#     REVISION: 0.1: 2014-05-03
+#               0.2: 2014-08-06
+#               0.3: 2015-10-03
 #===================================================================================
 # Debug
 set -x
@@ -48,13 +51,18 @@ fi
 ##############################
 ### Variables
 workingdir="$HOME/tmp"
-nas_rip="$HOME/Videos/Rips"
-nas_transcode="$HOME/Videos/Movies"
-# TODO: Separate out Movie vs TV/Animation rip?
 holding_rip="$HOME/tmp/MoveToRipDrive"
 holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
 dir_rip="DVD-Rip"
 dir_transcode="DVD-Transcode"
+titlemode=$(zenity --list --text "Choose DVD content" --radiolist --column "Pick" --column "Type" TRUE "Movies" FALSE "TV" FALSE "Animation")
+# Set nas_rip directory to appropriate one, based on $titlemode.  TV and Animation get special subdirs.
+if [[ $titlemode -eq "Movies" ]]; then
+  nas_rip="$HOME/Videos/Rips"
+else
+  nas_rip="$HOME/Videos/Rips/$titlemode"
+fi
+nas_transcode="$HOME/Videos/$titlemode"
 
 ### Ensure directories are created for the working and NAS variables.
 mkdir --parents "$workingdir"
@@ -97,8 +105,8 @@ if [[ ! -f $isofile ]]; then
 fi
 
 # Get filename minus dirs and minus ext (use for transcode filename)
-#basename=$(basename --suffix=.iso $isofile)
-#transcodefilename="$basename.mkv"
+basename=$(basename --suffix=.iso $isofile)
+transcodefilename="$basename.mkv"
 
 
 ###########################################
@@ -108,8 +116,8 @@ fi
 #########################
 ####### TRANSCODE #######
 #########################
-#OUTPUTDIR="$TMPDIR" isotomkv "$isofile"
-#isotomkv "$isofile"  # Tmp: Output to default location, $HOME/tmp
+#OUTPUTDIR="$TMPDIR" TITLEMODE="$titlemode" isotomkv "$isofile"  # Don't do this until copy to transcode dir works; this script will delete the TMPDIR when it ends. 
+TITLEMODE="$titlemode" isotomkv "$isofile"  # Temporarily: Output to default location, $HOME/tmp
 
 #if [[ $? -ne 0 ]]; then
 #  # The helper script already printed out an error message.
@@ -117,7 +125,8 @@ fi
 #fi
 
 ### Get the transcode filename(s) 
-#==== Work below here.
+#==== Work below here.  Find some way to help the user name the files.  
+#==== Extensive zenity usage?  Just text entry dialogs?  This seems to imply that lists can be editable!! https://help.gnome.org/users/zenity/stable/list.html.en
 #transcodedir=$(find *.mkv -type f)
 #if [[ ! -d $transcodedir ]]; then
 #  echo "The second running of abcde did not create a transcode directory that could be found.  Exiting." >&2
