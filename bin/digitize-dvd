@@ -55,7 +55,11 @@ holding_rip="$HOME/tmp/MoveToRipDrive"
 holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
 dir_rip="DVD-Rip"
 dir_transcode="DVD-Transcode"
+
+# Ask user explicitly what the DVD content is.
+# TODO: Find some way to figure out automatically whether the DVD has Movie, TV, or Animation content.
 titlemode=$(zenity --list --text "Choose DVD content" --radiolist --column "Pick" --column "Type" TRUE "Movies" FALSE "TV" FALSE "Animation")
+
 # Set nas_rip directory to appropriate one, based on $titlemode.  TV and Animation get special subdirs.
 if [[ $titlemode -eq "Movies" ]]; then
   nas_rip="$HOME/Videos/Rips"
