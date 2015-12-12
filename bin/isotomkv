@@ -26,7 +26,7 @@ HANDBRAKE_OUTPUT_FORMAT=${HANDBRAKE_OUTPUT_FORMAT:-mkv}
 # Title Select Mode (default to movies)
 # Options: Movie, TV, Animated Shorts
 # Movie = > 1hr
-# TV = 21 to 50 min
+# TV = 21 to 51 min
 # Animated = 6 to 10 min
 TITLEMODE=${TITLEMODE:-movie}
 
@@ -74,8 +74,8 @@ for thetitle in "${thetitles[@]}"; do
         M|m)  # Movie mode (>1hr) ; $1 gets hours, $2 gets minutes
           willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 > 0 ) print "x"}')
           ;;
-        T|t)  # TV mode (22>x<45) ; $1 gets hours, $2 gets minutes
-          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (21 <= $2 && $2 < 50)) print "x"}')
+        T|t)  # TV mode (21>x<51) ; $1 gets hours, $2 gets minutes
+          willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (21 <= $2 && $2 < 51)) print "x"}')
           ;;
         A|a)  # Animated Short mode (6>x<10) ; $1 gets hours, $2 gets minutes
           willrip[$titleid]=$(awk '{print $4}' <<<$thetitle | awk 'BEGIN {FS=":"} {if ($1 == 0 && (6 <= $2 && $2 <= 10)) print "x"}')
