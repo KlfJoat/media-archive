@@ -80,7 +80,7 @@ trap clean_up 0 1 2 3 15
 ###########################################
 ####### DUAL - RIP AND GET CD INFO #######
 ###########################################
-$HOME/src/media-archive/cdto1flac
+cdto1flac
 
 if [[ $? -ne 0 ]]; then
   # The helper script already printed out an error message.
@@ -103,7 +103,7 @@ fi
 #########################
 ####### TRANSCODE #######
 #########################
-$HOME/src/media-archive/1flactovorbis "$flacfile"
+1flactovorbis "$flacfile"
 
 if [[ $? -ne 0 ]]; then
   # The helper script already printed out an error message.
