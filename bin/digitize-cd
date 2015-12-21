@@ -15,6 +15,7 @@
 # REQUIREMENTS: cdto1flac, 1flactovorbis, mktemp, zenity, abcde, cdparanoia
 # PACKAGES REQ: abcde
 #         BUGS: * Doesn't need to pause if invoked from the command-line
+#               Probably dozens more.
 #        NOTES: TODO: Add support for specifying the CD drive on the command-line.
 #       AUTHOR: KlfJoat
 #      VERSION: 2.0

@@ -15,12 +15,16 @@
 # REQUIREMENTS: dvdtoiso, mktemp, zenity, dvdbackup
 # PACKAGES REQ: dvdbackup
 #         BUGS: Probably dozens.
-#        NOTES: ---
+#        NOTES: TODO: Figure out if there's a way to determine Animated, TV, or
+#               Movie in some automated fashion.  
 #       AUTHOR: KlfJoat
-#      VERSION: 0.1
+#      VERSION: 0.3
 #      CREATED: 2014-05-03
-#     REVISION: ---
+#     REVISION: 0.1: 2014-05-03
+#               0.2: 2014-08-06
+#               0.3: 2015-10-03
 #===================================================================================
+
 # Debug
 set -x
 ################################
@@ -48,13 +52,22 @@ fi
 ##############################
 ### Variables
 workingdir="$HOME/tmp"
-nas_rip="$HOME/Videos/Rips"
-nas_transcode="$HOME/Videos/Movies"
-# TODO: Separate out Movie vs TV/Animation rip?
 holding_rip="$HOME/tmp/MoveToRipDrive"
 holding_transcode="$HOME/tmp/MoveToTranscodeDrive"
 dir_rip="DVD-Rip"
 dir_transcode="DVD-Transcode"
+
+# Ask user explicitly what the DVD content is.
+# TODO: Find some way to figure out automatically whether the DVD has Movie, TV, or Animation content.
+titlemode=$(zenity --list --text "Choose DVD content" --radiolist --column "Pick" --column "Type" TRUE "Movies" FALSE "TV" FALSE "Animation")
+
+# Set nas_rip directory to appropriate one, based on $titlemode.  TV and Animation get special subdirs.
+if [[ $titlemode -eq "Movies" ]]; then
+  nas_rip="$HOME/Videos/Rips"
+else
+  nas_rip="$HOME/Videos/Rips/$titlemode"
+fi
+nas_transcode="$HOME/Videos/$titlemode"
 
 ### Ensure directories are created for the working and NAS variables.
 mkdir --parents "$workingdir"
@@ -97,8 +110,8 @@ if [[ ! -f $isofile ]]; then
 fi
 
 # Get filename minus dirs and minus ext (use for transcode filename)
-#basename=$(basename --suffix=.iso $isofile)
-#transcodefilename="$basename.mkv"
+basename=$(basename --suffix=.iso $isofile)
+transcodefilename="$basename.mkv"
 
 
 ###########################################
@@ -108,15 +121,18 @@ fi
 #########################
 ####### TRANSCODE #######
 #########################
-#$1flactovorbis "$flacfile"
+#OUTPUTDIR="$TMPDIR" TITLEMODE="$titlemode" isotomkv "$isofile"  # Don't do this until copy to transcode dir works; this script will delete the TMPDIR when it ends. 
+TITLEMODE="$titlemode" isotomkv "$isofile"  # Temporarily: Output to default location, $HOME/tmp
 
 #if [[ $? -ne 0 ]]; then
 #  # The helper script already printed out an error message.
 #  exit $?
 #fi
 
-### Get directory of filename minus dirs and minus ext (use for transcode filename)
-#transcodedir=$(find * -maxdepth 0 -type d)
+### Get the transcode filename(s) 
+#==== Work below here.  Find some way to help the user name the files.  
+#==== Extensive zenity usage?  Just text entry dialogs?  This seems to imply that lists can be editable!! https://help.gnome.org/users/zenity/stable/list.html.en
+#transcodedir=$(find *.mkv -type f)
 #if [[ ! -d $transcodedir ]]; then
 #  echo "The second running of abcde did not create a transcode directory that could be found.  Exiting." >&2
 #  echo "The value of transcodedir is '$transcodedir'" >&2
@@ -136,19 +152,19 @@ cp --verbose --recursive "$isofile" "$nas_rip"
 ####### COPY TO EXT HDD OR HOLDING AREA #######
 ###############################################
 # Variables - RegExps to use.
-#ripregexp="\/Rip"
+ripregexp="\/Rip"
 #transcoderegexp="\/Transcode"
 
 ### First, make sure only one of each recognizable drive is attached.
 ### Then, set the drives' mount points. 
 # Find 1 Rip drive
-#ripcount=$(grep --count "$ripregexp" /proc/mounts)
-#if [[ $ripcount -eq 1 ]]; then
-#  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
-#  # leaving only the rest of line. Which is the mount point including any 
-#  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
-#  ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
-#fi
+ripcount=$(grep --count "$ripregexp" /proc/mounts)
+if [[ $ripcount -eq 1 ]]; then
+  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
+  # leaving only the rest of line. Which is the mount point including any 
+  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
+  ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
+fi
 
 # Find 1 Transcode drive
 #transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
@@ -162,11 +178,11 @@ cp --verbose --recursive "$isofile" "$nas_rip"
 ### ??Check for filename collision??
 
 ### Copy rip to ext HDD, if mounted; holding dir if not.
-#if [[ "$ripdrive" ]]; then
-#  dest="${ripdrive}/${dir_rip}"
-#else
+if [[ "$ripdrive" ]]; then
+  dest="${ripdrive}/${dir_rip}"
+else
   dest="${holding_rip}/${dir_rip}"
-#fi
+fi
 
 mkdir --parents "$dest"
 cp --verbose --recursive "$isofile" "$dest"

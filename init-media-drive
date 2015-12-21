@@ -1,0 +1,10 @@
+#!/bin/bash
+# init-media-drive
+#
+# Script to init media drive
+#
+# Pseudocode:
+# Find drive type
+# Name drive (input on #)
+# Create directory structure (from tar?)
+# Add script to sync when extHDD media drive plugged in (grab from holding area)
