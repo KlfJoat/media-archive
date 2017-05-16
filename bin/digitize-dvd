@@ -3,20 +3,20 @@
 #
 #         FILE: digitize-dvd
 #
-#        USAGE: digitize-dvd 
+#        USAGE: digitize-dvd
 #
 #      SUMMARY: Script to digitize my DVD collection and manage the resulting file.
-#  DESCRIPTION: This is a lot of glue and automation on top of my other actual 
+#  DESCRIPTION: This is a lot of glue and automation on top of my other actual
 #               ripping and transcoding functions.  It's been kind of fun designing
 #               and figuring out how to do this.
 #
 #      PROJECT: Media Collection (media-archive)
-#      OPTIONS: 
+#      OPTIONS:
 # REQUIREMENTS: dvdtoiso, mktemp, zenity, dvdbackup
 # PACKAGES REQ: dvdbackup
 #         BUGS: Probably dozens.
 #        NOTES: TODO: Figure out if there's a way to determine Animated, TV, or
-#               Movie in some automated fashion.  
+#               Movie in some automated fashion.
 #       AUTHOR: KlfJoat
 #      VERSION: 0.3
 #      CREATED: 2014-05-03
@@ -62,7 +62,7 @@ dir_transcode="DVD-Transcode"
 titlemode=$(zenity --list --text "Choose DVD content" --radiolist --column "Pick" --column "Type" TRUE "Movies" FALSE "TV" FALSE "Animation")
 
 # Set nas_rip directory to appropriate one, based on $titlemode.  TV and Animation get special subdirs.
-if [[ $titlemode -eq "Movies" ]]; then
+if [[ $titlemode = "Movies" ]]; then
   nas_rip="$HOME/Videos/Rips"
 else
   nas_rip="$HOME/Videos/Rips/$titlemode"
@@ -73,7 +73,7 @@ nas_transcode="$HOME/Videos/$titlemode"
 mkdir --parents "$workingdir"
 mkdir --parents "$nas_rip"
 mkdir --parents "$nas_transcode"
-      
+
 ### Create temp dir
 TMPDIR=$(mktemp --quiet --directory --tmpdir="$workingdir" dvd.XXXXXX) || { echo "Failed to create temp directory."; exit 1; }
 olddir=$(pwd)
@@ -102,7 +102,7 @@ fi
 
 
 ### Figure out ISO filename (should be the only one in our temp directory)
-isofile=$(find *.iso)
+isofile=$(find ./*.iso)
 if [[ ! -f $isofile ]]; then
   echo "The rip did not create an ISO file that could be discerned.  Exiting." >&2
   echo "The value of isofile is '$isofile'" >&2
@@ -110,7 +110,7 @@ if [[ ! -f $isofile ]]; then
 fi
 
 # Get filename minus dirs and minus ext (use for transcode filename)
-basename=$(basename --suffix=.iso $isofile)
+basename=$(basename --suffix=.iso "$isofile")
 transcodefilename="$basename.mkv"
 
 
@@ -121,7 +121,7 @@ transcodefilename="$basename.mkv"
 #########################
 ####### TRANSCODE #######
 #########################
-#OUTPUTDIR="$TMPDIR" TITLEMODE="$titlemode" isotomkv "$isofile"  # Don't do this until copy to transcode dir works; this script will delete the TMPDIR when it ends. 
+#OUTPUTDIR="$TMPDIR" TITLEMODE="$titlemode" isotomkv "$isofile"  # Don't do this until copy to transcode dir works; this script will delete the TMPDIR when it ends.
 TITLEMODE="$titlemode" isotomkv "$isofile"  # Temporarily: Output to default location, $HOME/tmp
 
 #if [[ $? -ne 0 ]]; then
@@ -129,8 +129,8 @@ TITLEMODE="$titlemode" isotomkv "$isofile"  # Temporarily: Output to default loc
 #  exit $?
 #fi
 
-### Get the transcode filename(s) 
-#==== Work below here.  Find some way to help the user name the files.  
+### Get the transcode filename(s)
+#==== Work below here.  Find some way to help the user name the files.
 #==== Extensive zenity usage?  Just text entry dialogs?  This seems to imply that lists can be editable!! https://help.gnome.org/users/zenity/stable/list.html.en
 #transcodedir=$(find *.mkv -type f)
 #if [[ ! -d $transcodedir ]]; then
@@ -156,12 +156,12 @@ ripregexp="\/Rip"
 #transcoderegexp="\/Transcode"
 
 ### First, make sure only one of each recognizable drive is attached.
-### Then, set the drives' mount points. 
+### Then, set the drives' mount points.
 # Find 1 Rip drive
 ripcount=$(grep --count "$ripregexp" /proc/mounts)
 if [[ $ripcount -eq 1 ]]; then
-  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
-  # leaving only the rest of line. Which is the mount point including any 
+  # The perl regex replaces 5 groups of non-spaces+spaces with nothing,
+  # leaving only the rest of line. Which is the mount point including any
   # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
   ripdrive=$(df -P | grep $ripregexp | perl -pe 's/^(\S+\s+){5}//')
 fi
@@ -169,8 +169,8 @@ fi
 # Find 1 Transcode drive
 #transcodecount=$(grep --count "$transcoderegexp" /proc/mounts)
 #if [[ $transcodecount -eq 1 ]]; then
-#  # The perl regex replaces 5 groups of non-spaces+spaces with nothing, 
-#  # leaving only the rest of line. Which is the mount point including any 
+#  # The perl regex replaces 5 groups of non-spaces+spaces with nothing,
+#  # leaving only the rest of line. Which is the mount point including any
 #  # possible spaces.  "|awk '{print $6}'" would work, except for spaces.
 #  transcodedrive=$(df -P | grep $transcoderegexp | perl -pe 's/^(\S+\s+){5}//')
 #fi
@@ -203,5 +203,5 @@ cp --verbose --recursive "$isofile" "$dest"
 ### Because of "trap 0", the function clean_up runs here.
 
 # Pause so output can be reviewed before closng digitize-dvd window.
-# TODO: Find a way to only execute this if digitize-dvd was called from a .desktop file. 
+# TODO: Find a way to only execute this if digitize-dvd was called from a .desktop file.
 read -n1 -r -p "Press any key to close window..."
