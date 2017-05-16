@@ -1,0 +1,42 @@
+From Camunda Modeler, the following tips might be useful wrt mime types and how to install.
+
+xdg-desktop-menu install $DESKTOP_FILE
+xdg-icon-resource install --size  16 "$CAMUNDA_MODELER_BIN/support/icon_16.png"  $ICON_NAME
+xdg-icon-resource install --size  48 "$CAMUNDA_MODELER_BIN/support/icon_48.png"  $ICON_NAME
+xdg-icon-resource install --size 128 "$CAMUNDA_MODELER_BIN/support/icon_128.png"  $ICON_NAME
+xdg-mime install "$CAMUNDA_MODELER_BIN/support/camunda-modeler-mime-types.xml"
+
+With the mime types file being:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/bpmn">
+    <comment>BPMN model</comment>
+    <acronym>BPMN</acronym>
+    <expanded-acronym>Business Process Model and Notation</expanded-acronym>
+    <glob pattern="*.bpmn"/>
+    <glob pattern="*.bpmn20.xml"/>
+    <sub-class-of type="application/xml"/>
+    <generic-icon name="application-xml"/>
+    <root-XML namespaceURI="http://www.omg.org/spec/BPMN/20100524/MODEL" localName="definitions"/>
+  </mime-type>
+  <mime-type type="application/cmmn">
+    <comment>CMMN model</comment>
+    <acronym>CMMN</acronym>
+    <expanded-acronym>Case Management Model and Notation</expanded-acronym>
+    <glob pattern="*.cmmn"/>
+    <sub-class-of type="application/xml"/>
+    <generic-icon name="application-xml"/>
+    <root-XML namespaceURI="http://www.omg.org/spec/CMMN/20151109/MODEL" localName="definitions"/>
+  </mime-type>
+  <mime-type type="application/dmn">
+    <comment>DMN model</comment>
+    <acronym>DMN</acronym>
+    <expanded-acronym>Decision Model and Notation</expanded-acronym>
+    <glob pattern="*.dmn"/>
+    <sub-class-of type="application/xml"/>
+    <generic-icon name="application-xml"/>
+    <root-XML namespaceURI="http://www.omg.org/spec/DMN/20151101/dmn11.xsd" localName="definitions"/>
+    <root-XML namespaceURI="http://www.omg.org/spec/DMN/20151101/dmn.xsd" localName="definitions"/>
+  </mime-type>
+</mime-info>

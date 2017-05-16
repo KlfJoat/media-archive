@@ -1,0 +1,5 @@
+New ABCDE page https://abcde.einval.com/wiki/
+
+The old ABCDE examples that weren't available (I think) last time I looked into it http://www.andrews-corner.org/linux/abcde/index.html
+
+The same guy provided info on how to include album art! http://www.andrews-corner.org/linux/abcde/getalbumart.html
