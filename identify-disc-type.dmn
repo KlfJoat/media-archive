@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="Definitions_0axs8dl" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_13nyxhf" name="Identify disc type">
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="udev entries">
+        <inputExpression id="inputExpression_1" typeRef="string">
+          <text>udev-entries</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1wqc4el" label="isDir">
+        <inputExpression id="LiteralExpression_0y40v2t" typeRef="string">
+          <text>isDir</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Disc type" name="disc-type" typeRef="string" />
+      <rule id="DecisionRule_1rsbw4m">
+        <inputEntry id="UnaryTests_0ekth9s">
+          <text>ID_CDROM_MEDIA_TRACK_COUNT_AUDIO</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ynw80v">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0y8gukr">
+          <text>cdda</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1cs5xoi">
+        <inputEntry id="UnaryTests_0vrfqba">
+          <text>ID_CDROM_MEDIA_DVD</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_196y5n6">
+          <text>"/VIDEO_TS","/video_ts"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0xuu90s">
+          <text>dvd-video</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1qhv7vc">
+        <inputEntry id="UnaryTests_0wlpqpc">
+          <text>ID_CDROM_MEDIA_BD</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0zuyhbt">
+          <text>"/BDMV"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0thu26e">
+          <text>br-video</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0mzhu54">
+        <inputEntry id="UnaryTests_08ter52">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1a834go">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_115e1s3">
+          <text>data</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
