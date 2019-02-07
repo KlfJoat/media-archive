@@ -16,3 +16,4 @@ Ideas
 * Figure out abcde album art, as well as how to get the album art into the .ogg
   files.
 * Re-think the directory structures--how to do the off-site backups, especially.
+* Bash and .ODT  http://cheesehead-techblog.blogspot.com/2009/03/bash-and-python-scripts-to-unzip-and.html
